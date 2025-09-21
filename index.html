@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Senin İçin Sude :)</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--rose:#e11d48;--soft:#fff0f6;--card-shadow:0 10px 30px rgba(17,24,39,0.08)}
+  *{box-sizing:border-box}html,body{height:100%;margin:0;font-family:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#111;background:linear-gradient(135deg,#ffe6f0 0%,#fff0f6 40%,#ffe6f0 100%);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:980px;margin:28px auto;padding:20px}
+  h1{margin:0;font-size:28px;text-align:center;color:#d63384;text-shadow:0 2px 6px rgba(214,51,132,0.4)}
+  p.lead{text-align:center;color:#6b7280;margin-top:6px}
+  .hero{margin-top:24px;background:linear-gradient(180deg,rgba(255,220,235,0.9),rgba(255,240,250,0.7));padding:24px;border-radius:16px;box-shadow:var(--card-shadow);overflow:hidden;text-align:center}
+  .photo{max-width:420px;margin:0 auto 20px auto;border-radius:12px;box-shadow:var(--card-shadow)}
+  .countdown{display:flex;justify-content:center;gap:12px;margin-top:20px}
+  .time{background:white;padding:14px 18px;border-radius:12px;min-width:70px;box-shadow:0 6px 18px rgba(0,0,0,0.08);font-weight:700;font-size:20px}
+  #message{margin-top:30px;font-size:32px;font-weight:700;color:var(--rose);display:none;text-shadow:0 2px 6px rgba(0,0,0,0.15)}
+  .game-area{margin-top:30px;padding:20px;border-radius:16px;background:white;box-shadow:var(--card-shadow);display:none}
+  canvas{border-radius:12px;display:block;margin:0 auto}
+  .scoreboard{margin-top:10px;text-align:center;font-weight:600;color:#444}
+  #confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+  .btn{background:var(--rose);color:white;padding:10px 16px;border-radius:999px;border:none;cursor:pointer;font-weight:700;box-shadow:var(--card-shadow);margin-top:20px}
+  /* Müzik butonu */
+  #musicToggle{
+    position:fixed;top:20px;left:20px;z-index:10000;
+    background:var(--rose);color:white;border:none;
+    padding:8px 14px;border-radius:999px;cursor:pointer;
+    font-weight:700;box-shadow:var(--card-shadow);
+  }
+
+  /* Fortune box styles */
+  #fortuneBox {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 10000;
+  }
+  #fortuneBtn {
+    background: var(--rose);
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 6px;
+  }
+  #fortuneMsg {
+    max-width: 180px;
+    background: white;
+    color: #d63384;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    display: none;
+    text-align: center;
+    font-size: 14px;
+  }
+
+</style>
+</head>
+<body>
+<button id="musicToggle">Müziği Aç</button>
+<div id="fortuneBox">
+  <button id="fortuneBtn" title="Sude bugün nasıl hissedecek?">🔮 Sude bugün nasıl hissedecek😊</button>
+  <div id="fortuneMsg"></div>
+</div>
+
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <h1>Senin İçin Sude :)</h1>
+  <p class="lead">Geri sayımı beklee</p>
+  <div class="hero">
+    <img src="photo1.png" alt="Sude" class="photo"/>
+    <div class="countdown">
+      <div class="time" id="cd-mins">00</div>
+      <div class="time" id="cd-secs">00</div>
+    </div>
+    <div id="message">İyi ki varsın Sude 🌸</div>
+    <button class="btn" id="startGameBtn" style="display:none">Çiçek Toplama Oyununu Başlat</button>
+  </div>
+
+  <div class="game-area" id="gameArea">
+    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px">Çiçeklere çift tıkla</p>
+    <canvas id="gameCanvas" width="600" height="300"></canvas>
+    <div class="scoreboard">Toplanan Çiçek: <span id="score">0</span> / <span id="target">10</span></div>
+  </div>
+</div>
+
+<script>
+// Setup audio
+const audio = new Audio('music.mp3');
+audio.loop = true;
+let musicOn = false;
+
+document.getElementById('musicToggle').addEventListener('click', () => {
+  if (!musicOn) {
+    audio.play().then(()=>{
+      musicOn = true;
+      document.getElementById('musicToggle').innerText = 'Müziği Kapat';
+    }).catch(()=>alert('Tarayıcı otomatik oynatma engelledi, tekrar deneyin.'));
+  } else {
+    audio.pause();
+    musicOn = false;
+    document.getElementById('musicToggle').innerText = 'Müziği Aç';
+  }
+});
+
+// Countdown 10 seconds
+let remaining = 10;
+const cdMins = document.getElementById('cd-mins');
+const cdSecs = document.getElementById('cd-secs');
+function updateClock(){
+  const mins = Math.floor(remaining/60);
+  const secs = remaining % 60;
+  cdMins.innerText = String(mins).padStart(2,'0');
+  cdSecs.innerText = String(secs).padStart(2,'0');
+  if(remaining<=0){ clearInterval(clockInterval); reveal(); }
+  remaining--;
+}
+const clockInterval = setInterval(updateClock, 1000);
+updateClock();
+
+function reveal(){
+  document.getElementById('message').style.display='block';
+  document.getElementById('startGameBtn').style.display='inline-block';
+  spawnConfetti(window.innerWidth/2, window.innerHeight/3, 150);
+}
+
+// Confetti
+const confetti = document.getElementById('confetti');
+const cctx = confetti.getContext('2d');
+function resizeConf(){ confetti.width = innerWidth; confetti.height = innerHeight; }
+addEventListener('resize', resizeConf); resizeConf();
+let parts = [];
+function spawnConfetti(x,y,count=80){
+  for(let i=0;i<count;i++){
+    parts.push({
+      x:x+(Math.random()*60-30), y:y+(Math.random()*60-30),
+      vx:Math.random()*6-3, vy:Math.random()*-8-1, size:Math.random()*7+3,
+      life:Math.random()*80+60, color:`hsl(${Math.random()*360},70%,60%)`
+    });
+  }
+}
+function confStep(){
+  cctx.clearRect(0,0,confetti.width,confetti.height);
+  for(let i=parts.length-1;i>=0;i--){
+    const p = parts[i];
+    p.vy += 0.2; p.x += p.vx; p.y += p.vy; p.life -=1;
+    cctx.globalAlpha = Math.max(p.life/120,0);
+    cctx.fillStyle = p.color; cctx.beginPath();
+    cctx.ellipse(p.x,p.y,p.size,p.size*0.7,0,0,Math.PI*2); cctx.fill();
+    if(p.life<=0) parts.splice(i,1);
+  }
+  requestAnimationFrame(confStep);
+}
+confStep();
+
+// Flower catching game
+const gameBtn = document.getElementById('startGameBtn');
+const gameArea = document.getElementById('gameArea');
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let flowers = [], score = 0, target = 10, gameRunning = false;
+document.getElementById('target').textContent = target;
+
+function startGame(){
+  gameArea.style.display = 'block';
+  flowers = []; score = 0; document.getElementById('score').innerText = score;
+  gameRunning = true;
+  requestAnimationFrame(updateGame);
+  spawnLoop();
+}
+
+gameBtn.addEventListener('click', ()=>{
+  startGame();
+});
+
+function spawnFlower(){
+  flowers.push({
+    x: Math.random()*(canvas.width-40)+20,
+    y: -20,
+    vy: 1 + Math.random()*1.5,
+    size: 18 + Math.random()*8,
+    hue: 250 + Math.random()*80
+  });
+}
+
+function spawnLoop(){
+  if(!gameRunning) return;
+  spawnFlower();
+  setTimeout(spawnLoop, 800);
+}
+
+canvas.addEventListener('click', (ev)=>{
+  if(!gameRunning) return;
+  const rect = canvas.getBoundingClientRect(); 
+  const x = ev.clientX - rect.left; 
+  const y = ev.clientY - rect.top;
+  for(let i=flowers.length-1;i>=0;i--){
+    const f = flowers[i];
+    if(Math.hypot(f.x - x, f.y - y) < f.size){
+      flowers.splice(i,1);
+      score++;
+      document.getElementById('score').innerText = score;
+      spawnConfetti(x+rect.left, y+rect.top, 20);
+      if(score >= target){
+        gameRunning = false;
+        alert('nayss kızım sanaa');
+      }
+      break;
+    }
+  }
+});
+
+function updateGame(){
+  if(!gameRunning) return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let i=flowers.length-1;i>=0;i--){
+    const f = flowers[i];
+    f.y += f.vy;
+    ctx.fillStyle = `hsl(${f.hue},70%,60%)`;
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
+    ctx.fill();
+    if(f.y > canvas.height + 40) flowers.splice(i,1);
+  }
+  requestAnimationFrame(updateGame);
+}
+
+// Fortune messages
+const fortunes = [
+  "Bugün enerjinle herkesi büyüleyeceksin",
+  "Kalbin sıcacık, gülümsemen ışıl ışıl",
+  "Harika bir sürpriz seni bekliyor",
+  "Bugün her şey istediğin gibi gidecek",
+  "Sen bugün ekstra tatlı görünüyorsun",
+  "Kocaman bir gülümseme ile tüm günü aydınlat",
+  "Kalbinin güzelliği etrafına mutluluk saçıyor"
+];
+document.getElementById('fortuneBtn').addEventListener('click', () => {
+  const msg = fortunes[Math.floor(Math.random() * fortunes.length)];
+  const box = document.getElementById('fortuneMsg');
+  box.textContent = msg;
+  box.style.display = 'block';
+});
+
+</script>
+</body>
+</html>
