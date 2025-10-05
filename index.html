@@ -22,39 +22,39 @@
     opacity: 0.4;
   }
 
-  .wrap{max-width:980px;margin:28px auto;padding:20px;position:relative;z-index:1}
-  h1{margin:0;font-size:28px;text-align:center;color:#d63384;text-shadow:0 2px 6px rgba(214,51,132,0.4)}
-  p.lead{text-align:center;color:#6b7280;margin-top:6px}
-  .hero{margin-top:24px;background:linear-gradient(180deg,rgba(255,220,235,0.9),rgba(255,240,250,0.7));padding:24px;border-radius:16px;box-shadow:var(--card-shadow);overflow:hidden;text-align:center}
-  .photo{max-width:420px;margin:0 auto 20px auto;border-radius:12px;box-shadow:var(--card-shadow)}
-  .countdown{display:flex;justify-content:center;gap:12px;margin-top:20px}
-  .time{background:white;padding:14px 18px;border-radius:12px;min-width:70px;box-shadow:0 6px 18px rgba(0,0,0,0.08);font-weight:700;font-size:20px}
-  #message{margin-top:30px;font-size:32px;font-weight:700;color:var(--rose);display:none;text-shadow:0 2px 6px rgba(0,0,0,0.15)}
-  .game-area{margin-top:30px;padding:20px;border-radius:16px;background:white;box-shadow:var(--card-shadow);display:none}
-  canvas{border-radius:12px;display:block;margin:0 auto;max-width:100%;border:2px solid #ffe6f0}
-  .scoreboard{margin-top:10px;text-align:center;font-weight:600;color:#444}
+  .wrap{max-width:980px;margin:0 auto;padding:15px;position:relative;z-index:1}
+  h1{margin:0;font-size:clamp(20px, 6vw, 28px);text-align:center;color:#d63384;text-shadow:0 2px 6px rgba(214,51,132,0.4);padding:0 10px;}
+  p.lead{text-align:center;color:#6b7280;margin-top:6px;font-size:clamp(14px, 4vw, 16px);}
+  .hero{margin-top:15px;background:linear-gradient(180deg,rgba(255,220,235,0.9),rgba(255,240,250,0.7));padding:clamp(15px, 4vw, 24px);border-radius:16px;box-shadow:var(--card-shadow);overflow:hidden;text-align:center}
+  .photo{max-width:100%;height:auto;margin:0 auto 15px auto;border-radius:12px;box-shadow:var(--card-shadow)}
+  .countdown{display:flex;justify-content:center;gap:10px;margin-top:15px;flex-wrap:wrap;}
+  .time{background:white;padding:12px 15px;border-radius:12px;min-width:60px;box-shadow:0 6px 18px rgba(0,0,0,0.08);font-weight:700;font-size:clamp(16px, 5vw, 20px);text-align:center;}
+  #message{margin-top:20px;font-size:clamp(20px, 8vw, 32px);font-weight:700;color:var(--rose);display:none;text-shadow:0 2px 6px rgba(0,0,0,0.15);padding:0 10px;}
+  .game-area{margin-top:20px;padding:15px;border-radius:16px;background:white;box-shadow:var(--card-shadow);display:none}
+  canvas{display:block;margin:0 auto;max-width:100%;border:2px solid #ffe6f0;border-radius:12px;}
+  .scoreboard{margin-top:10px;text-align:center;font-weight:600;color:#444;font-size:clamp(14px, 4vw, 16px);}
   #confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9999}
-  .btn{background:var(--rose);color:white;padding:10px 16px;border-radius:999px;border:none;cursor:pointer;font-weight:700;box-shadow:var(--card-shadow);margin-top:20px;transition:transform 0.2s}
+  .btn{background:var(--rose);color:white;padding:12px 20px;border-radius:999px;border:none;cursor:pointer;font-weight:700;box-shadow:var(--card-shadow);margin-top:15px;transition:transform 0.2s;font-size:clamp(14px, 4vw, 16px);width:100%;max-width:250px;}
   .btn:hover{transform:translateY(-2px)}
 
-  /* BUTONLAR */
+  /* BUTONLAR - MOBIL DOSTU */
   #musicToggle{
-    position:fixed;top:20px;left:20px;z-index:10000;
+    position:fixed;top:10px;left:10px;z-index:10000;
     background:var(--rose);color:white;border:none;
-    padding:8px 14px;border-radius:999px;cursor:pointer;
-    font-weight:700;box-shadow:var(--card-shadow);font-size:12px;
+    padding:8px 12px;border-radius:999px;cursor:pointer;
+    font-weight:700;box-shadow:var(--card-shadow);font-size:clamp(11px, 3vw, 12px);
   }
   #rainToggle{
-    position:fixed;top:60px;left:20px;z-index:10000;
+    position:fixed;top:10px;left:90px;z-index:10000;
     background:#06b6d4;color:white;border:none;
-    padding:8px 14px;border-radius:999px;cursor:pointer;
-    font-weight:700;box-shadow:var(--card-shadow);font-size:12px;
+    padding:8px 12px;border-radius:999px;cursor:pointer;
+    font-weight:700;box-shadow:var(--card-shadow);font-size:clamp(11px, 3vw, 12px);
   }
 
   #fortuneBox {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 50px;
+    right: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -64,19 +64,20 @@
     background: var(--rose);
     border: none;
     color: white;
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px);
     padding: 8px 12px;
     border-radius: 999px;
     cursor: pointer;
     box-shadow: var(--card-shadow);
     margin-bottom: 6px;
+    white-space: nowrap;
   }
   #fortuneBtn:disabled {
     background: #ccc;
     cursor: not-allowed;
   }
   #fortuneMsg {
-    max-width: 200px;
+    max-width: min(200px, 70vw);
     background: white;
     color: #d63384;
     font-weight: 600;
@@ -85,26 +86,31 @@
     box-shadow: 0 6px 18px rgba(0,0,0,0.15);
     display: none;
     text-align: center;
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px);
     border: 2px solid #ffe6f0;
   }
 
   .game-selection {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 20px;
+    margin-top: 15px;
   }
   .game-btn {
     background: linear-gradient(45deg, #e11d48, #d63384);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 25px;
+    padding: 10px 16px;
+    border-radius: 20px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
+    font-size: clamp(12px, 3vw, 14px);
+    white-space: nowrap;
+    flex: 1;
+    min-width: 120px;
+    max-width: 200px;
   }
   .game-btn:hover {
     transform: translateY(-2px);
@@ -116,18 +122,19 @@
   }
   .drawing-controls {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
-    margin: 15px 0;
+    margin: 12px 0;
     flex-wrap: wrap;
   }
   .color-btn {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     border: 2px solid white;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    flex-shrink: 0;
   }
   .color-btn.active {
     border-color: #333;
@@ -140,20 +147,20 @@
   .memory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin: 20px auto;
-    max-width: 500px;
+    gap: 8px;
+    margin: 15px auto;
+    max-width: min(500px, 90vw);
   }
   .memory-card {
-    width: 80px;
-    height: 80px;
+    width: 100%;
+    aspect-ratio: 1;
     background: linear-gradient(45deg, #e11d48, #d63384);
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: clamp(16px, 5vw, 24px);
     color: transparent;
     transition: all 0.3s;
   }
@@ -167,24 +174,47 @@
     cursor: default;
   }
 
-  @media (max-width: 768px) {
-    .wrap { margin: 15px auto; padding: 15px; }
-    h1 { font-size: 24px; }
-    .photo { max-width: 100%; }
-    .time { min-width: 50px; padding: 10px 14px; font-size: 16px; }
-    #fortuneBox { top: 100px; right: 10px; }
-    #musicToggle, #rainToggle { padding: 6px 12px; font-size: 11px; }
-    #musicToggle { top: 10px; left: 10px; }
-    #rainToggle { top: 50px; left: 10px; }
-    .memory-grid { grid-template-columns: repeat(4, 1fr); }
-    .memory-card { width: 70px; height: 70px; font-size: 20px; }
-    #drawCanvas { width: 100% !important; height: 300px !important; }
+  /* MOBIL OPTIMIZASYONLARI */
+  @media (max-width: 480px) {
+    .wrap { padding: 10px; }
+    .hero { padding: 12px; margin-top: 10px; }
+    .countdown { gap: 6px; }
+    .time { min-width: 50px; padding: 10px 12px; font-size: 16px; }
+    .game-selection { gap: 6px; }
+    .game-btn { padding: 8px 12px; font-size: 12px; min-width: 100px; }
+    .memory-grid { gap: 6px; }
+    .drawing-controls { gap: 6px; }
+    .color-btn { width: 24px; height: 24px; }
+    #musicToggle, #rainToggle { padding: 6px 10px; font-size: 10px; }
+    #musicToggle { left: 5px; }
+    #rainToggle { left: 70px; }
+    #fortuneBox { top: 45px; right: 5px; }
+  }
+
+  @media (max-width: 768px) and (min-width: 481px) {
+    .wrap { padding: 15px; }
+    #musicToggle { left: 15px; }
+    #rainToggle { left: 100px; }
+    #fortuneBox { top: 60px; right: 15px; }
   }
 
   .daily-limit {
     background: #ffeb3b;
     color: #333;
     border: 2px solid #ffc107;
+  }
+
+  /* CANVAS BOYUTLARI MOBIL ICIN */
+  #gameCanvas {
+    width: 100% !important;
+    height: 200px !important;
+    max-width: 600px;
+  }
+  
+  #drawCanvas {
+    width: 100% !important;
+    height: 300px !important;
+    max-width: 600px;
   }
 </style>
 </head>
@@ -221,18 +251,20 @@
 
   <!-- Flower Game -->
   <div class="game-area" id="flowerGame">
-    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px">Çiçeklere tıkla! 🌸 (Maksimum 3 kaçırma hakkın var!)</p>
+    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px;font-size:clamp(14px, 4vw, 16px);">Çiçeklere tıkla! 🌸 (Maksimum 3 kaçırma hakkın var!)</p>
     <canvas id="gameCanvas" width="600" height="300"></canvas>
     <div class="scoreboard">
       Toplanan Çiçek: <span id="score">0</span> / <span id="target">10</span> | 
       Kaçırılan: <span id="missed">0</span> / 3
     </div>
-    <button class="btn" onclick="resetFlowerGame()">Yeniden Başla</button>
+    <div style="text-align:center;">
+      <button class="btn" onclick="resetFlowerGame()" style="display:inline-block;width:auto;padding:10px 20px;">Yeniden Başla</button>
+    </div>
   </div>
 
   <!-- Drawing Game -->
   <div class="game-area" id="drawingGame">
-    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px">Haydi güzel şeyler çiz! 🎨</p>
+    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px;font-size:clamp(14px, 4vw, 16px);">Haydi güzel şeyler çiz! 🎨</p>
     <canvas id="drawCanvas" width="600" height="400"></canvas>
     <div class="drawing-controls">
       <button class="color-btn active" style="background:#e11d48" onclick="setColor('#e11d48')"></button>
@@ -242,17 +274,19 @@
       <button class="color-btn" style="background:#06b6d4" onclick="setColor('#06b6d4')"></button>
       <button class="color-btn" style="background:#10b981" onclick="setColor('#10b981')"></button>
       <button class="color-btn" style="background:#000000" onclick="setColor('#000000')"></button>
-      <button class="btn" onclick="clearCanvas()" style="margin:0;padding:6px 12px;font-size:12px">Temizle</button>
+      <button class="btn" onclick="clearCanvas()" style="margin:0;padding:6px 12px;font-size:12px;width:auto;">Temizle</button>
     </div>
-    <p style="color:#6b7280;font-size:14px;margin-top:10px">Fareyi/tuşu basılı tutarak çizim yapabilirsin</p>
+    <p style="color:#6b7280;font-size:clamp(12px, 3vw, 14px);margin-top:10px;text-align:center;">Fareyi/tuşu basılı tutarak çizim yapabilirsin</p>
   </div>
 
   <!-- Memory Game -->
   <div class="game-area" id="memoryGame">
-    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px">B12 vitaminin tazelensin! 🧠</p>
+    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px;font-size:clamp(14px, 4vw, 16px);">B12 vitaminin tazelensin! 🧠</p>
     <div class="memory-grid" id="memoryGrid"></div>
     <div class="scoreboard">Hamle: <span id="moves">0</span></div>
-    <button class="btn" onclick="resetMemoryGame()">Yeniden Başla</button>
+    <div style="text-align:center;">
+      <button class="btn" onclick="resetMemoryGame()" style="display:inline-block;width:auto;padding:10px 20px;">Yeniden Başla</button>
+    </div>
   </div>
 </div>
 
@@ -262,10 +296,10 @@ const audio = new Audio('music.mp3');
 audio.loop = true;
 let musicOn = false;
 
-// Yağmur sesi - AYARLANDI (%20)
+// Yağmur sesi
 const rainAudio = new Audio('rain-sound.mp3');
 rainAudio.loop = true;
-rainAudio.volume = 0.2; // %20 ses - dengeli
+rainAudio.volume = 0.2;
 
 let rainOn = true;
 
@@ -294,7 +328,7 @@ document.getElementById('musicToggle').addEventListener('click', () => {
     audio.play().then(() => {
       musicOn = true;
       document.getElementById('musicToggle').innerText = 'Müziği Kapat';
-    }).catch(() => alert('Tarayıcı otomatik oynatma engelledi, tekrar deneyin.'));
+    }).catch(() => alert('Müzik için butona tıklayın.'));
   } else {
     audio.pause();
     musicOn = false;
@@ -400,15 +434,15 @@ window.addEventListener('load', () => {
   }
 });
 
-// ÇİÇEK OYUNU - DÜZELTİLDİ
+// ÇİÇEK OYUNU - MOBIL UYUMLU
 let flowerGameRunning = false;
 let flowers = [], score = 0, target = 10, missedFlowers = 0;
 let flowerInterval, spawnInterval;
 
 function stopFlowerGame() {
   flowerGameRunning = false;
-  if (flowerInterval) clearInterval(flowerInterval);
-  if (spawnInterval) clearInterval(spawnInterval);
+  if (flowerInterval) cancelAnimationFrame(flowerInterval);
+  if (spawnInterval) clearTimeout(spawnInterval);
   flowers = [];
 }
 
@@ -422,6 +456,11 @@ function startFlowerGame() {
   document.getElementById('flowerGame').style.display = 'block';
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
+  
+  // Canvas boyutunu mobil için ayarla
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
   
   // Oyunu sıfırla
   flowers = []; 
@@ -462,7 +501,7 @@ function startFlowerGame() {
       x: Math.random()*(canvas.width-40)+20,
       y: -20,
       vy: 1 + Math.random()*1.5,
-      size: 18 + Math.random()*8,
+      size: Math.min(18 + Math.random()*8, canvas.width/20),
       hue: 250 + Math.random()*80
     });
   }
@@ -473,11 +512,12 @@ function startFlowerGame() {
     spawnInterval = setTimeout(spawnLoop, 800);
   }
 
-  canvas.onclick = (ev)=>{
+  // Mobil dokunmatik destek
+  canvas.ontouchstart = canvas.onclick = (ev)=>{
     if(!flowerGameRunning) return;
     const rect = canvas.getBoundingClientRect(); 
-    const x = ev.clientX - rect.left; 
-    const y = ev.clientY - rect.top;
+    const x = (ev.clientX || ev.touches[0].clientX) - rect.left; 
+    const y = (ev.clientY || ev.touches[0].clientY) - rect.top;
     for(let i=flowers.length-1;i>=0;i--){
       const f = flowers[i];
       if(Math.hypot(f.x - x, f.y - y) < f.size){
@@ -487,7 +527,7 @@ function startFlowerGame() {
         spawnConfetti(x+rect.left, y+rect.top, 20);
         if(score >= target){
           stopFlowerGame();
-          setTimeout(() => alert('nayss kızım sanaa 🌸'), 300); // DEĞİŞTİRİLDİ
+          setTimeout(() => alert('nayss kızım sanaa 🌸'), 300);
         }
         break;
       }
@@ -498,6 +538,7 @@ function startFlowerGame() {
   spawnLoop();
 }
 
+// Diğer oyun kodları aynı...
 let currentColor = '#e11d48';
 let isDrawing = false;
 
@@ -508,14 +549,15 @@ function startDrawingGame() {
   const canvas = document.getElementById('drawCanvas');
   const ctx = canvas.getContext('2d');
   
+  // Canvas boyutunu ayarla
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  
   ctx.fillStyle = '#fff0f6';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  canvas.onmousedown = startDrawing;
-  canvas.onmousemove = draw;
-  canvas.onmouseup = stopDrawing;
-  canvas.onmouseout = stopDrawing;
-  
+  // Mobil dokunmatik destek
   canvas.ontouchstart = (e) => {
     e.preventDefault();
     startDrawing(e.touches[0]);
@@ -525,6 +567,12 @@ function startDrawingGame() {
     draw(e.touches[0]);
   };
   canvas.ontouchend = stopDrawing;
+  
+  // Mause desteği
+  canvas.onmousedown = startDrawing;
+  canvas.onmousemove = draw;
+  canvas.onmouseup = stopDrawing;
+  canvas.onmouseout = stopDrawing;
 }
 
 function startDrawing(e) {
@@ -539,8 +587,8 @@ function draw(e) {
   const ctx = canvas.getContext('2d');
   const rect = canvas.getBoundingClientRect();
   
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
+  const x = (e.clientX || e.touches[0].clientX) - rect.left;
+  const y = (e.clientY || e.touches[0].clientY) - rect.top;
   
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
@@ -660,6 +708,24 @@ hideAllGames();
 // Video kontrol
 document.getElementById('backgroundVideo').addEventListener('loadeddata', function() {
   console.log('✅ Video arkaplan yüklendi!');
+});
+
+// Sayfa boyutu değişince canvas'ları güncelle
+window.addEventListener('resize', function() {
+  const flowerCanvas = document.getElementById('gameCanvas');
+  const drawCanvas = document.getElementById('drawCanvas');
+  
+  if (flowerCanvas) {
+    const rect = flowerCanvas.getBoundingClientRect();
+    flowerCanvas.width = rect.width;
+    flowerCanvas.height = rect.height;
+  }
+  
+  if (drawCanvas) {
+    const rect = drawCanvas.getBoundingClientRect();
+    drawCanvas.width = rect.width;
+    drawCanvas.height = rect.height;
+  }
 });
 </script>
 </body>
