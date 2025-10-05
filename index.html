@@ -211,7 +211,7 @@
     margin: 15px auto 0;
   }
 
-  /* CIZIM OYUNU */
+  /* CIZIM OYUNU - DÜZELTİLDİ */
   #drawCanvas {
     width: 100%;
     height: 250px;
@@ -221,6 +221,7 @@
     display: block;
     margin: 0 auto;
     touch-action: none;
+    cursor: crosshair;
   }
 
   .drawing-controls {
@@ -237,14 +238,16 @@
     border-radius: 50%;
     border: 2px solid white;
     cursor: pointer;
+    transition: transform 0.2s;
   }
 
   .color-btn.active {
     border-color: #333;
-    transform: scale(1.1);
+    transform: scale(1.2);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
   }
 
-  /* MEMORY OYUNU */
+  /* MEMORY OYUNU - DÜZELTİLDİ */
   .memory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -263,16 +266,20 @@
     font-size: 20px;
     color: transparent;
     cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
   }
 
   .memory-card.revealed {
     color: white;
     background: #4ade80;
+    transform: rotateY(180deg);
   }
 
   .memory-card.matched {
     background: #94a3b8;
     cursor: default;
+    transform: scale(0.95);
   }
 
   /* CONFetti */
@@ -512,7 +519,7 @@ function hideAllGames() {
   stopFlowerGame();
 }
 
-// CICEK OYUNU - MOBIL ICIN YENIDEN
+// CICEK OYUNU
 let flowerGameRunning = false;
 let flowers = [];
 let score = 0;
@@ -635,8 +642,11 @@ function startFlowerGame() {
   spawnFlower();
 }
 
-// DIGER OYUNLAR (kisaltilmis)
+// CIZIM OYUNU - TAMAMEN DÜZELTİLDİ
 let currentColor = '#e11d48';
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
 
 function startDrawingGame() {
   hideAllGames();
@@ -644,52 +654,90 @@ function startDrawingGame() {
   
   const canvas = document.getElementById('drawCanvas');
   const ctx = canvas.getContext('2d');
+  
+  // Canvas boyutunu ayarla
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
   
+  // Canvas'ı temizle
   ctx.fillStyle = '#fff0f6';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  let drawing = false;
-  
-  function startDraw(e) {
-    drawing = true;
-    draw(e);
-  }
-  
-  function draw(e) {
-    if (!drawing) return;
-    const x = (e.clientX || e.touches[0].clientX) - canvas.getBoundingClientRect().left;
-    const y = (e.clientY || e.touches[0].clientY) - canvas.getBoundingClientRect().top;
-    
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-  }
-  
-  function stopDraw() {
-    drawing = false;
-    ctx.beginPath();
-  }
-  
+  // Çizim ayarları
   ctx.lineWidth = 3;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
   ctx.strokeStyle = currentColor;
   
-  canvas.addEventListener('mousedown', startDraw);
+  // Çizim fonksiyonları
+  function startDrawing(e) {
+    isDrawing = true;
+    const pos = getMousePos(canvas, e);
+    [lastX, lastY] = [pos.x, pos.y];
+  }
+  
+  function draw(e) {
+    if (!isDrawing) return;
+    
+    const pos = getMousePos(canvas, e);
+    
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    
+    [lastX, lastY] = [pos.x, pos.y];
+  }
+  
+  function stopDrawing() {
+    isDrawing = false;
+  }
+  
+  // Mouse/touch pozisyonu
+  function getMousePos(canvas, evt) {
+    const rect = canvas.getBoundingClientRect();
+    if (evt.touches) {
+      return {
+        x: evt.touches[0].clientX - rect.left,
+        y: evt.touches[0].clientY - rect.top
+      };
+    } else {
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
+  }
+  
+  // Event listener'ları temizle ve yeniden ekle
+  canvas.removeEventListener('mousedown', startDrawing);
+  canvas.removeEventListener('mousemove', draw);
+  canvas.removeEventListener('mouseup', stopDrawing);
+  canvas.removeEventListener('touchstart', startDrawing);
+  canvas.removeEventListener('touchmove', draw);
+  canvas.removeEventListener('touchend', stopDrawing);
+  
+  canvas.addEventListener('mousedown', startDrawing);
   canvas.addEventListener('mousemove', draw);
-  canvas.addEventListener('mouseup', stopDraw);
-  canvas.addEventListener('touchstart', startDraw);
+  canvas.addEventListener('mouseup', stopDrawing);
+  canvas.addEventListener('mouseout', stopDrawing);
+  
+  canvas.addEventListener('touchstart', startDrawing);
   canvas.addEventListener('touchmove', draw);
-  canvas.addEventListener('touchend', stopDraw);
+  canvas.addEventListener('touchend', stopDrawing);
 }
 
 function setColor(color) {
   currentColor = color;
-  document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
   event.target.classList.add('active');
+  
+  // Canvas context'ini güncelle
+  const canvas = document.getElementById('drawCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = currentColor;
 }
 
 function clearCanvas() {
@@ -699,7 +747,12 @@ function clearCanvas() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// MEMORY OYUNU
+// MEMORY OYUNU - TAMAMEN DÜZELTİLDİ
+let flippedCards = [];
+let moves = 0;
+let matchedPairs = 0;
+let canFlip = true;
+
 function startMemoryGame() {
   hideAllGames();
   document.getElementById('memoryGame').style.display = 'block';
@@ -709,33 +762,94 @@ function startMemoryGame() {
 function resetMemoryGame() {
   const grid = document.getElementById('memoryGrid');
   grid.innerHTML = '';
-  const emojis = ['🌸', '🌹', '💐', '🌺', '🌷', '🌼', '💖', '🌟'];
-  let cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+  flippedCards = [];
+  moves = 0;
+  matchedPairs = 0;
+  canFlip = true;
+  document.getElementById('moves').textContent = moves;
   
-  cards.forEach((emoji, i) => {
+  const emojis = ['🌸', '🌹', '💐', '🌺', '🌷', '🌼', '💖', '🌟'];
+  let cards = [...emojis, ...emojis];
+  
+  // Karıştır
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  
+  // Kartları oluştur
+  cards.forEach((emoji, index) => {
     const card = document.createElement('div');
     card.className = 'memory-card';
-    card.textContent = emoji;
-    card.style.color = 'transparent';
-    card.onclick = () => {
-      if (card.style.color === 'transparent') {
-        card.style.color = 'white';
-        card.style.background = '#4ade80';
-        setTimeout(() => {
-          if (card.style.color !== 'transparent') {
-            card.style.color = 'transparent';
-            card.style.background = 'linear-gradient(45deg, #e11d48, #d63384)';
-          }
-        }, 1000);
-      }
-    };
+    card.dataset.emoji = emoji;
+    card.dataset.index = index;
+    card.textContent = '?';
+    
+    card.addEventListener('click', () => flipCard(card));
     grid.appendChild(card);
   });
+}
+
+function flipCard(card) {
+  if (!canFlip || card.classList.contains('revealed') || card.classList.contains('matched')) return;
+  
+  // Kartı aç
+  card.classList.add('revealed');
+  card.textContent = card.dataset.emoji;
+  flippedCards.push(card);
+  
+  // 2 kart açıldı mı kontrol et
+  if (flippedCards.length === 2) {
+    canFlip = false;
+    moves++;
+    document.getElementById('moves').textContent = moves;
+    
+    const [card1, card2] = flippedCards;
+    
+    if (card1.dataset.emoji === card2.dataset.emoji) {
+      // Eşleşme bulundu
+      card1.classList.add('matched');
+      card2.classList.add('matched');
+      matchedPairs++;
+      
+      spawnConfetti(card1.offsetLeft + 25, card1.offsetTop + 25, 10);
+      
+      if (matchedPairs === 8) {
+        setTimeout(() => alert(`Tebrikler! B12'n tazelendi! 🧠 ${moves} hamlede tamamladın!`), 500);
+      }
+      
+      flippedCards = [];
+      canFlip = true;
+    } else {
+      // Eşleşme yok, kartları kapat
+      setTimeout(() => {
+        card1.classList.remove('revealed');
+        card2.classList.remove('revealed');
+        card1.textContent = '?';
+        card2.textContent = '?';
+        flippedCards = [];
+        canFlip = true;
+      }, 1000);
+    }
+  }
 }
 
 // SAYFA YUKLENDIGINDE
 window.addEventListener('load', () => {
   console.log('🚀 Site mobil uyumlu yüklendi!');
+});
+
+// Sayfa boyutu değişince canvas'ları güncelle
+window.addEventListener('resize', function() {
+  const canvases = ['gameCanvas', 'drawCanvas'];
+  canvases.forEach(canvasId => {
+    const canvas = document.getElementById(canvasId);
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+  });
 });
 </script>
 </body>
