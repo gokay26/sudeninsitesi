@@ -2,244 +2,338 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
 <title>Senin İçin Sude :)</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{--rose:#e11d48;--soft:#fff0f6;--card-shadow:0 10px 30px rgba(17,24,39,0.08)}
-  *{box-sizing:border-box}html,body{height:100%;margin:0;font-family:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#111;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  /* RESET */
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; font-family: Montserrat, sans-serif; color: #111; overflow-x: hidden; touch-action: manipulation; }
   
-  /* VIDEO ARKAPLAN */
+  /* VIDEO */
   #backgroundVideo {
     position: fixed;
-    top: 0;
-    left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
     z-index: -1;
     opacity: 0.4;
   }
 
-  .wrap{max-width:980px;margin:0 auto;padding:15px;position:relative;z-index:1}
-  h1{margin:0;font-size:clamp(20px, 6vw, 28px);text-align:center;color:#d63384;text-shadow:0 2px 6px rgba(214,51,132,0.4);padding:0 10px;}
-  p.lead{text-align:center;color:#6b7280;margin-top:6px;font-size:clamp(14px, 4vw, 16px);}
-  .hero{margin-top:15px;background:linear-gradient(180deg,rgba(255,220,235,0.9),rgba(255,240,250,0.7));padding:clamp(15px, 4vw, 24px);border-radius:16px;box-shadow:var(--card-shadow);overflow:hidden;text-align:center}
-  .photo{max-width:100%;height:auto;margin:0 auto 15px auto;border-radius:12px;box-shadow:var(--card-shadow)}
-  .countdown{display:flex;justify-content:center;gap:10px;margin-top:15px;flex-wrap:wrap;}
-  .time{background:white;padding:12px 15px;border-radius:12px;min-width:60px;box-shadow:0 6px 18px rgba(0,0,0,0.08);font-weight:700;font-size:clamp(16px, 5vw, 20px);text-align:center;}
-  #message{margin-top:20px;font-size:clamp(20px, 8vw, 32px);font-weight:700;color:var(--rose);display:none;text-shadow:0 2px 6px rgba(0,0,0,0.15);padding:0 10px;}
-  .game-area{margin-top:20px;padding:15px;border-radius:16px;background:white;box-shadow:var(--card-shadow);display:none}
-  canvas{display:block;margin:0 auto;max-width:100%;border:2px solid #ffe6f0;border-radius:12px;}
-  .scoreboard{margin-top:10px;text-align:center;font-weight:600;color:#444;font-size:clamp(14px, 4vw, 16px);}
-  #confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9999}
-  .btn{background:var(--rose);color:white;padding:12px 20px;border-radius:999px;border:none;cursor:pointer;font-weight:700;box-shadow:var(--card-shadow);margin-top:15px;transition:transform 0.2s;font-size:clamp(14px, 4vw, 16px);width:100%;max-width:250px;}
-  .btn:hover{transform:translateY(-2px)}
+  /* BUTONLAR - MOBIL ICIN YENIDEN */
+  .control-buttons {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
 
-  /* BUTONLAR - MOBIL DOSTU */
-  #musicToggle{
-    position:fixed;top:10px;left:10px;z-index:10000;
-    background:var(--rose);color:white;border:none;
-    padding:8px 12px;border-radius:999px;cursor:pointer;
-    font-weight:700;box-shadow:var(--card-shadow);font-size:clamp(11px, 3vw, 12px);
+  .control-btn {
+    background: #e11d48;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    white-space: nowrap;
   }
-  #rainToggle{
-    position:fixed;top:10px;left:90px;z-index:10000;
-    background:#06b6d4;color:white;border:none;
-    padding:8px 12px;border-radius:999px;cursor:pointer;
-    font-weight:700;box-shadow:var(--card-shadow);font-size:clamp(11px, 3vw, 12px);
-  }
+
+  #rainToggle { background: #06b6d4; }
 
   #fortuneBox {
     position: fixed;
-    top: 50px;
+    top: 10px;
     right: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
     z-index: 10000;
   }
+
   #fortuneBtn {
-    background: var(--rose);
-    border: none;
+    background: #e11d48;
     color: white;
-    font-size: clamp(12px, 3vw, 14px);
+    border: none;
     padding: 8px 12px;
-    border-radius: 999px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     cursor: pointer;
-    box-shadow: var(--card-shadow);
-    margin-bottom: 6px;
-    white-space: nowrap;
   }
-  #fortuneBtn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
+
   #fortuneMsg {
-    max-width: min(200px, 70vw);
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
     background: white;
-    color: #d63384;
-    font-weight: 600;
-    padding: 12px 16px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     display: none;
-    text-align: center;
-    font-size: clamp(12px, 3vw, 14px);
+    max-width: 200px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #d63384;
     border: 2px solid #ffe6f0;
   }
 
-  .game-selection {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 15px;
+  /* ANA ICERIK */
+  .wrap {
+    max-width: 100%;
+    padding: 70px 15px 20px;
+    margin: 0 auto;
   }
+
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #d63384;
+    margin-bottom: 10px;
+  }
+
+  .lead {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .hero {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .photo {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+
+  .countdown {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+  }
+
+  .time {
+    background: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  #message {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e11d48;
+    margin: 20px 0;
+    display: none;
+  }
+
+  /* OYUN BUTONLARI */
+  .game-selection {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
   .game-btn {
     background: linear-gradient(45deg, #e11d48, #d63384);
     color: white;
     border: none;
-    padding: 10px 16px;
-    border-radius: 20px;
-    cursor: pointer;
+    padding: 15px;
+    border-radius: 12px;
     font-weight: 600;
-    transition: all 0.3s;
-    font-size: clamp(12px, 3vw, 14px);
-    white-space: nowrap;
-    flex: 1;
-    min-width: 120px;
-    max-width: 200px;
-  }
-  .game-btn:hover {
-    transform: translateY(-2px);
+    font-size: 14px;
+    cursor: pointer;
   }
 
-  #drawingGame {
+  /* OYUN ALANLARI */
+  .game-area {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-top: 20px;
     display: none;
-    text-align: center;
   }
+
+  .game-title {
+    text-align: center;
+    color: #d63384;
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+
+  /* CICEK OYUNU */
+  #gameCanvas {
+    width: 100%;
+    height: 200px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    border: 2px solid #ffe6f0;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .scoreboard {
+    text-align: center;
+    margin: 10px 0;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .action-btn {
+    background: #e11d48;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: block;
+    margin: 15px auto 0;
+  }
+
+  /* CIZIM OYUNU */
+  #drawCanvas {
+    width: 100%;
+    height: 250px;
+    background: #fff0f6;
+    border-radius: 10px;
+    border: 2px solid #ffe6f0;
+    display: block;
+    margin: 0 auto;
+    touch-action: none;
+  }
+
   .drawing-controls {
     display: flex;
-    gap: 8px;
     justify-content: center;
-    margin: 12px 0;
+    gap: 8px;
+    margin: 15px 0;
     flex-wrap: wrap;
   }
+
   .color-btn {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: 2px solid white;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    flex-shrink: 0;
   }
+
   .color-btn.active {
     border-color: #333;
     transform: scale(1.1);
   }
 
-  #memoryGame {
-    display: none;
-  }
+  /* MEMORY OYUNU */
   .memory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin: 15px auto;
-    max-width: min(500px, 90vw);
+    max-width: 300px;
   }
+
   .memory-card {
-    width: 100%;
     aspect-ratio: 1;
     background: linear-gradient(45deg, #e11d48, #d63384);
     border-radius: 8px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(16px, 5vw, 24px);
+    font-size: 20px;
     color: transparent;
-    transition: all 0.3s;
+    cursor: pointer;
   }
+
   .memory-card.revealed {
     color: white;
     background: #4ade80;
-    transform: rotateY(180deg);
   }
+
   .memory-card.matched {
     background: #94a3b8;
     cursor: default;
   }
 
-  /* MOBIL OPTIMIZASYONLARI */
-  @media (max-width: 480px) {
-    .wrap { padding: 10px; }
-    .hero { padding: 12px; margin-top: 10px; }
-    .countdown { gap: 6px; }
-    .time { min-width: 50px; padding: 10px 12px; font-size: 16px; }
-    .game-selection { gap: 6px; }
-    .game-btn { padding: 8px 12px; font-size: 12px; min-width: 100px; }
-    .memory-grid { gap: 6px; }
-    .drawing-controls { gap: 6px; }
-    .color-btn { width: 24px; height: 24px; }
-    #musicToggle, #rainToggle { padding: 6px 10px; font-size: 10px; }
-    #musicToggle { left: 5px; }
-    #rainToggle { left: 70px; }
-    #fortuneBox { top: 45px; right: 5px; }
+  /* CONFetti */
+  #confetti {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
   }
 
-  @media (max-width: 768px) and (min-width: 481px) {
-    .wrap { padding: 15px; }
-    #musicToggle { left: 15px; }
-    #rainToggle { left: 100px; }
-    #fortuneBox { top: 60px; right: 15px; }
+  /* TABLET */
+  @media (min-width: 768px) {
+    .wrap { max-width: 700px; padding: 80px 20px 30px; }
+    h1 { font-size: 28px; }
+    .game-selection { grid-template-columns: repeat(3, 1fr); }
+    .control-buttons { top: 20px; left: 20px; }
+    #fortuneBox { top: 20px; right: 20px; }
+    #gameCanvas { height: 250px; }
+    #drawCanvas { height: 300px; }
+    .memory-grid { max-width: 400px; }
   }
 
-  .daily-limit {
-    background: #ffeb3b;
-    color: #333;
-    border: 2px solid #ffc107;
-  }
-
-  /* CANVAS BOYUTLARI MOBIL ICIN */
-  #gameCanvas {
-    width: 100% !important;
-    height: 200px !important;
-    max-width: 600px;
-  }
-  
-  #drawCanvas {
-    width: 100% !important;
-    height: 300px !important;
-    max-width: 600px;
+  /* PC */
+  @media (min-width: 1024px) {
+    .wrap { max-width: 900px; }
+    #gameCanvas { height: 300px; }
+    #drawCanvas { height: 350px; }
   }
 </style>
 </head>
 <body>
-<!-- VIDEO ARKAPLAN -->
+<!-- VIDEO -->
 <video id="backgroundVideo" autoplay muted loop playsinline>
   <source src="rain-video.mp4" type="video/mp4">
 </video>
 
-<button id="musicToggle">Müziği Aç</button>
-<button id="rainToggle">Yağmur: Açık</button>
+<!-- BUTONLAR -->
+<div class="control-buttons">
+  <button id="musicToggle" class="control-btn">Müziği Aç</button>
+  <button id="rainToggle" class="control-btn">Yağmur: Açık</button>
+</div>
+
 <div id="fortuneBox">
-  <button id="fortuneBtn" title="Sude bugün nasıl hissedecek?">🔮 Bugünkü Falın</button>
+  <button id="fortuneBtn">🔮 Bugünkü Falın</button>
   <div id="fortuneMsg"></div>
 </div>
 
 <canvas id="confetti"></canvas>
+
 <div class="wrap">
   <h1>Senin İçin Sude :)</h1>
   <p class="lead">Geri sayımı bekleee 💕</p>
+  
   <div class="hero">
     <img src="photo1.png" alt="Sude" class="photo"/>
+    
     <div class="countdown">
       <div class="time" id="cd-secs">10</div>
     </div>
+    
     <div id="message">İyi ki varsın Sude 🌸</div>
     
     <div class="game-selection">
@@ -249,23 +343,21 @@
     </div>
   </div>
 
-  <!-- Flower Game -->
+  <!-- CICEK OYUNU -->
   <div class="game-area" id="flowerGame">
-    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px;font-size:clamp(14px, 4vw, 16px);">Çiçeklere tıkla! 🌸 (Maksimum 3 kaçırma hakkın var!)</p>
-    <canvas id="gameCanvas" width="600" height="300"></canvas>
+    <div class="game-title">Çiçeklere tıkla! 🌸 (Maksimum 3 kaçırma hakkın var!)</div>
+    <canvas id="gameCanvas"></canvas>
     <div class="scoreboard">
-      Toplanan Çiçek: <span id="score">0</span> / <span id="target">10</span> | 
-      Kaçırılan: <span id="missed">0</span> / 3
+      Toplanan: <span id="score">0</span>/<span id="target">10</span> | 
+      Kaçırılan: <span id="missed">0</span>/3
     </div>
-    <div style="text-align:center;">
-      <button class="btn" onclick="resetFlowerGame()" style="display:inline-block;width:auto;padding:10px 20px;">Yeniden Başla</button>
-    </div>
+    <button class="action-btn" onclick="resetFlowerGame()">Yeniden Başla</button>
   </div>
 
-  <!-- Drawing Game -->
+  <!-- CIZIM OYUNU -->
   <div class="game-area" id="drawingGame">
-    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px;font-size:clamp(14px, 4vw, 16px);">Haydi güzel şeyler çiz! 🎨</p>
-    <canvas id="drawCanvas" width="600" height="400"></canvas>
+    <div class="game-title">Haydi güzel şeyler çiz! 🎨</div>
+    <canvas id="drawCanvas"></canvas>
     <div class="drawing-controls">
       <button class="color-btn active" style="background:#e11d48" onclick="setColor('#e11d48')"></button>
       <button class="color-btn" style="background:#d63384" onclick="setColor('#d63384')"></button>
@@ -274,61 +366,37 @@
       <button class="color-btn" style="background:#06b6d4" onclick="setColor('#06b6d4')"></button>
       <button class="color-btn" style="background:#10b981" onclick="setColor('#10b981')"></button>
       <button class="color-btn" style="background:#000000" onclick="setColor('#000000')"></button>
-      <button class="btn" onclick="clearCanvas()" style="margin:0;padding:6px 12px;font-size:12px;width:auto;">Temizle</button>
+      <button class="action-btn" onclick="clearCanvas()" style="padding: 8px 15px; margin: 0;">Temizle</button>
     </div>
-    <p style="color:#6b7280;font-size:clamp(12px, 3vw, 14px);margin-top:10px;text-align:center;">Fareyi/tuşu basılı tutarak çizim yapabilirsin</p>
   </div>
 
-  <!-- Memory Game -->
+  <!-- MEMORY OYUNU -->
   <div class="game-area" id="memoryGame">
-    <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px;font-size:clamp(14px, 4vw, 16px);">B12 vitaminin tazelensin! 🧠</p>
+    <div class="game-title">B12 vitaminin tazelensin! 🧠</div>
     <div class="memory-grid" id="memoryGrid"></div>
     <div class="scoreboard">Hamle: <span id="moves">0</span></div>
-    <div style="text-align:center;">
-      <button class="btn" onclick="resetMemoryGame()" style="display:inline-block;width:auto;padding:10px 20px;">Yeniden Başla</button>
-    </div>
+    <button class="action-btn" onclick="resetMemoryGame()">Yeniden Başla</button>
   </div>
 </div>
 
 <script>
-// Müzik
+// SES SISTEMI
 const audio = new Audio('music.mp3');
 audio.loop = true;
 let musicOn = false;
 
-// Yağmur sesi
 const rainAudio = new Audio('rain-sound.mp3');
 rainAudio.loop = true;
 rainAudio.volume = 0.2;
-
 let rainOn = true;
 
-// Yağmur kontrolü
-document.getElementById('rainToggle').addEventListener('click', () => {
-  const rainVideo = document.getElementById('backgroundVideo');
-  const rainBtn = document.getElementById('rainToggle');
-  
-  if (rainOn) {
-    rainVideo.style.display = 'none';
-    rainAudio.pause();
-    rainBtn.textContent = 'Yağmur: Kapalı';
-    rainBtn.style.background = '#6b7280';
-  } else {
-    rainVideo.style.display = 'block';
-    rainAudio.play();
-    rainBtn.textContent = 'Yağmur: Açık';
-    rainBtn.style.background = '#06b6d4';
-  }
-  rainOn = !rainOn;
-});
-
-// Müzik kontrolü
+// BUTON KONTROLLERI
 document.getElementById('musicToggle').addEventListener('click', () => {
   if (!musicOn) {
     audio.play().then(() => {
       musicOn = true;
       document.getElementById('musicToggle').innerText = 'Müziği Kapat';
-    }).catch(() => alert('Müzik için butona tıklayın.'));
+    });
   } else {
     audio.pause();
     musicOn = false;
@@ -336,55 +404,78 @@ document.getElementById('musicToggle').addEventListener('click', () => {
   }
 });
 
-// Geri sayım 10 saniye
+document.getElementById('rainToggle').addEventListener('click', () => {
+  const video = document.getElementById('backgroundVideo');
+  rainOn = !rainOn;
+  
+  if (rainOn) {
+    video.style.display = 'block';
+    rainAudio.play();
+    document.getElementById('rainToggle').textContent = 'Yağmur: Açık';
+    document.getElementById('rainToggle').style.background = '#06b6d4';
+  } else {
+    video.style.display = 'none';
+    rainAudio.pause();
+    document.getElementById('rainToggle').textContent = 'Yağmur: Kapalı';
+    document.getElementById('rainToggle').style.background = '#6b7280';
+  }
+});
+
+// GERI SAYIM
 let remaining = 10;
-const cdSecs = document.getElementById('cd-secs');
-function updateClock(){
-  cdSecs.innerText = String(remaining).padStart(2,'0');
-  if(remaining <= 0){ 
-    clearInterval(clockInterval); 
-    reveal(); 
+const clockInterval = setInterval(() => {
+  document.getElementById('cd-secs').textContent = String(remaining).padStart(2, '0');
+  if (remaining <= 0) {
+    clearInterval(clockInterval);
+    document.getElementById('message').style.display = 'block';
+    spawnConfetti(window.innerWidth/2, window.innerHeight/3, 150);
   }
   remaining--;
-}
-const clockInterval = setInterval(updateClock, 1000);
-updateClock();
+}, 1000);
 
-function reveal(){
-  document.getElementById('message').style.display='block';
-  spawnConfetti(window.innerWidth/2, window.innerHeight/3, 150);
-}
-
-// Confetti
+// CONFetti
 const confetti = document.getElementById('confetti');
 const cctx = confetti.getContext('2d');
-function resizeConf(){ confetti.width = innerWidth; confetti.height = innerHeight; }
-addEventListener('resize', resizeConf); resizeConf();
-let parts = [];
-function spawnConfetti(x,y,count=80){
-  for(let i=0;i<count;i++){
-    parts.push({
-      x:x+(Math.random()*60-30), y:y+(Math.random()*60-30),
-      vx:Math.random()*6-3, vy:Math.random()*-8-1, size:Math.random()*7+3,
-      life:Math.random()*80+60, color:`hsl(${Math.random()*360},70%,60%)`
+confetti.width = window.innerWidth;
+confetti.height = window.innerHeight;
+let particles = [];
+
+function spawnConfetti(x, y, count = 80) {
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: x + (Math.random() * 60 - 30),
+      y: y + (Math.random() * 60 - 30),
+      vx: Math.random() * 6 - 3,
+      vy: Math.random() * -8 - 1,
+      size: Math.random() * 7 + 3,
+      life: Math.random() * 80 + 60,
+      color: `hsl(${Math.random() * 360}, 70%, 60%)`
     });
   }
 }
-function confStep(){
-  cctx.clearRect(0,0,confetti.width,confetti.height);
-  for(let i=parts.length-1;i>=0;i--){
-    const p = parts[i];
-    p.vy += 0.2; p.x += p.vx; p.y += p.vy; p.life -=1;
-    cctx.globalAlpha = Math.max(p.life/120,0);
-    cctx.fillStyle = p.color; cctx.beginPath();
-    cctx.ellipse(p.x,p.y,p.size,p.size*0.7,0,0,Math.PI*2); cctx.fill();
-    if(p.life<=0) parts.splice(i,1);
-  }
-  requestAnimationFrame(confStep);
-}
-confStep();
 
-// Fal sistemi
+function confettiLoop() {
+  cctx.clearRect(0, 0, confetti.width, confetti.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.vy += 0.2;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life -= 1;
+    
+    cctx.globalAlpha = Math.max(p.life / 120, 0);
+    cctx.fillStyle = p.color;
+    cctx.beginPath();
+    cctx.ellipse(p.x, p.y, p.size, p.size * 0.7, 0, 0, Math.PI * 2);
+    cctx.fill();
+    
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+  requestAnimationFrame(confettiLoop);
+}
+confettiLoop();
+
+// FAL SISTEMI
 const fortunes = [
   "Bugün enerjinle herkesi büyüleyeceksin ✨",
   "Kalbin sıcacık, gülümsemen ışıl ışıl olacak 🌟",
@@ -395,54 +486,44 @@ const fortunes = [
   "Kalbinin güzelliği etrafına mutluluk saçıyor 💖"
 ];
 
-function getDailyFortune() {
+document.getElementById('fortuneBtn').addEventListener('click', () => {
   const today = new Date().toDateString();
   const lastFortune = localStorage.getItem('lastFortuneDate');
-  const fortuneBtn = document.getElementById('fortuneBtn');
   const fortuneMsg = document.getElementById('fortuneMsg');
-
+  
   if (lastFortune === today) {
     fortuneMsg.textContent = "Bugünlük fal hakkını kullandın! 💫 Yarın yeni bir falın olacak!";
     fortuneMsg.style.display = 'block';
-    fortuneMsg.className = 'daily-limit';
-    fortuneBtn.disabled = true;
-    fortuneBtn.style.background = '#ccc';
     return;
   }
-
+  
   const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
   fortuneMsg.textContent = randomFortune;
   fortuneMsg.style.display = 'block';
-  fortuneMsg.className = '';
-  fortuneBtn.disabled = true;
-  fortuneBtn.style.background = '#ccc';
-  
   localStorage.setItem('lastFortuneDate', today);
   spawnConfetti(window.innerWidth/2, window.innerHeight/2, 30);
-}
-
-document.getElementById('fortuneBtn').addEventListener('click', getDailyFortune);
-
-window.addEventListener('load', () => {
-  const today = new Date().toDateString();
-  const lastFortune = localStorage.getItem('lastFortuneDate');
-  const fortuneBtn = document.getElementById('fortuneBtn');
-  
-  if (lastFortune === today) {
-    fortuneBtn.disabled = true;
-    fortuneBtn.style.background = '#ccc';
-  }
 });
 
-// ÇİÇEK OYUNU - MOBIL UYUMLU
+// OYUN SISTEMI
+function hideAllGames() {
+  document.querySelectorAll('.game-area').forEach(area => {
+    area.style.display = 'none';
+  });
+  stopFlowerGame();
+}
+
+// CICEK OYUNU - MOBIL ICIN YENIDEN
 let flowerGameRunning = false;
-let flowers = [], score = 0, target = 10, missedFlowers = 0;
-let flowerInterval, spawnInterval;
+let flowers = [];
+let score = 0;
+let missedFlowers = 0;
+let flowerAnimationId = null;
+let flowerSpawnTimeout = null;
 
 function stopFlowerGame() {
   flowerGameRunning = false;
-  if (flowerInterval) cancelAnimationFrame(flowerInterval);
-  if (spawnInterval) clearTimeout(spawnInterval);
+  if (flowerAnimationId) cancelAnimationFrame(flowerAnimationId);
+  if (flowerSpawnTimeout) clearTimeout(flowerSpawnTimeout);
   flowers = [];
 }
 
@@ -454,93 +535,108 @@ function resetFlowerGame() {
 function startFlowerGame() {
   hideAllGames();
   document.getElementById('flowerGame').style.display = 'block';
+  
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   
-  // Canvas boyutunu mobil için ayarla
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width;
-  canvas.height = rect.height;
+  // Canvas boyutunu ayarla
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
   
   // Oyunu sıfırla
-  flowers = []; 
-  score = 0; 
+  flowers = [];
+  score = 0;
   missedFlowers = 0;
-  document.getElementById('score').innerText = score;
-  document.getElementById('missed').innerText = missedFlowers;
+  document.getElementById('score').textContent = score;
+  document.getElementById('missed').textContent = missedFlowers;
   flowerGameRunning = true;
-  
-  function updateGame(){
-    if(!flowerGameRunning) return;
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(let i=flowers.length-1;i>=0;i--){
-      const f = flowers[i];
-      f.y += f.vy;
-      ctx.fillStyle = `hsl(${f.hue},70%,60%)`;
+
+  // Cicek spawn
+  function spawnFlower() {
+    if (!flowerGameRunning) return;
+    
+    flowers.push({
+      x: Math.random() * (canvas.width - 40) + 20,
+      y: -30,
+      vy: 1 + Math.random() * 1.5,
+      size: Math.min(20, canvas.width / 25),
+      hue: 250 + Math.random() * 80
+    });
+    
+    flowerSpawnTimeout = setTimeout(spawnFlower, 800);
+  }
+
+  // Oyun loop
+  function gameLoop() {
+    if (!flowerGameRunning) return;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Cicekleri ciz ve hareket ettir
+    for (let i = flowers.length - 1; i >= 0; i--) {
+      const flower = flowers[i];
+      flower.y += flower.vy;
+      
+      // Cicek ciz
+      ctx.fillStyle = `hsl(${flower.hue}, 70%, 60%)`;
       ctx.beginPath();
-      ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
+      ctx.arc(flower.x, flower.y, flower.size, 0, Math.PI * 2);
       ctx.fill();
       
-      if(f.y > canvas.height + 40) {
-        flowers.splice(i,1);
+      // Ekrandan cikti mi kontrol et
+      if (flower.y > canvas.height + 50) {
+        flowers.splice(i, 1);
         missedFlowers++;
-        document.getElementById('missed').innerText = missedFlowers;
+        document.getElementById('missed').textContent = missedFlowers;
         
-        if(missedFlowers >= 3) {
+        if (missedFlowers >= 3) {
           stopFlowerGame();
           setTimeout(() => alert('Üzgünüm! 3 çiçek kaçırdın. Yeniden dene! 🌸'), 300);
         }
       }
     }
-    flowerInterval = requestAnimationFrame(updateGame);
+    
+    flowerAnimationId = requestAnimationFrame(gameLoop);
   }
 
-  function spawnFlower(){
-    if(!flowerGameRunning) return;
-    flowers.push({
-      x: Math.random()*(canvas.width-40)+20,
-      y: -20,
-      vy: 1 + Math.random()*1.5,
-      size: Math.min(18 + Math.random()*8, canvas.width/20),
-      hue: 250 + Math.random()*80
-    });
-  }
-
-  function spawnLoop(){
-    if(!flowerGameRunning) return;
-    spawnFlower();
-    spawnInterval = setTimeout(spawnLoop, 800);
-  }
-
-  // Mobil dokunmatik destek
-  canvas.ontouchstart = canvas.onclick = (ev)=>{
-    if(!flowerGameRunning) return;
-    const rect = canvas.getBoundingClientRect(); 
-    const x = (ev.clientX || ev.touches[0].clientX) - rect.left; 
-    const y = (ev.clientY || ev.touches[0].clientY) - rect.top;
-    for(let i=flowers.length-1;i>=0;i--){
-      const f = flowers[i];
-      if(Math.hypot(f.x - x, f.y - y) < f.size){
-        flowers.splice(i,1);
+  // Tıklama/dokunma event'i
+  function handleInteraction(e) {
+    if (!flowerGameRunning) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX || e.touches[0].clientX) - rect.left;
+    const y = (e.clientY || e.touches[0].clientY) - rect.top;
+    
+    for (let i = flowers.length - 1; i >= 0; i--) {
+      const flower = flowers[i];
+      const distance = Math.sqrt((flower.x - x) ** 2 + (flower.y - y) ** 2);
+      
+      if (distance < flower.size) {
+        flowers.splice(i, 1);
         score++;
-        document.getElementById('score').innerText = score;
-        spawnConfetti(x+rect.left, y+rect.top, 20);
-        if(score >= target){
+        document.getElementById('score').textContent = score;
+        spawnConfetti(x + rect.left, y + rect.top, 20);
+        
+        if (score >= 10) {
           stopFlowerGame();
           setTimeout(() => alert('nayss kızım sanaa 🌸'), 300);
         }
         break;
       }
     }
-  };
+  }
 
-  updateGame();
-  spawnLoop();
+  // Event listener'lar
+  canvas.addEventListener('click', handleInteraction);
+  canvas.addEventListener('touchstart', handleInteraction);
+  
+  // Oyunu baslat
+  gameLoop();
+  spawnFlower();
 }
 
-// Diğer oyun kodları aynı...
+// DIGER OYUNLAR (kisaltilmis)
 let currentColor = '#e11d48';
-let isDrawing = false;
 
 function startDrawingGame() {
   hideAllGames();
@@ -548,70 +644,51 @@ function startDrawingGame() {
   
   const canvas = document.getElementById('drawCanvas');
   const ctx = canvas.getContext('2d');
-  
-  // Canvas boyutunu ayarla
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width;
-  canvas.height = rect.height;
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
   
   ctx.fillStyle = '#fff0f6';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  // Mobil dokunmatik destek
-  canvas.ontouchstart = (e) => {
-    e.preventDefault();
-    startDrawing(e.touches[0]);
-  };
-  canvas.ontouchmove = (e) => {
-    e.preventDefault();
-    draw(e.touches[0]);
-  };
-  canvas.ontouchend = stopDrawing;
+  let drawing = false;
   
-  // Mause desteği
-  canvas.onmousedown = startDrawing;
-  canvas.onmousemove = draw;
-  canvas.onmouseup = stopDrawing;
-  canvas.onmouseout = stopDrawing;
-}
-
-function startDrawing(e) {
-  isDrawing = true;
-  draw(e);
-}
-
-function draw(e) {
-  if (!isDrawing) return;
+  function startDraw(e) {
+    drawing = true;
+    draw(e);
+  }
   
-  const canvas = document.getElementById('drawCanvas');
-  const ctx = canvas.getContext('2d');
-  const rect = canvas.getBoundingClientRect();
+  function draw(e) {
+    if (!drawing) return;
+    const x = (e.clientX || e.touches[0].clientX) - canvas.getBoundingClientRect().left;
+    const y = (e.clientY || e.touches[0].clientY) - canvas.getBoundingClientRect().top;
+    
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  }
   
-  const x = (e.clientX || e.touches[0].clientX) - rect.left;
-  const y = (e.clientY || e.touches[0].clientY) - rect.top;
+  function stopDraw() {
+    drawing = false;
+    ctx.beginPath();
+  }
   
+  ctx.lineWidth = 3;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
-  ctx.lineWidth = 3;
   ctx.strokeStyle = currentColor;
   
-  ctx.lineTo(x, y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-}
-
-function stopDrawing() {
-  isDrawing = false;
-  const ctx = document.getElementById('drawCanvas').getContext('2d');
-  ctx.beginPath();
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDraw);
+  canvas.addEventListener('touchstart', startDraw);
+  canvas.addEventListener('touchmove', draw);
+  canvas.addEventListener('touchend', stopDraw);
 }
 
 function setColor(color) {
   currentColor = color;
-  document.querySelectorAll('.color-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
+  document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
   event.target.classList.add('active');
 }
 
@@ -622,13 +699,7 @@ function clearCanvas() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-let memoryCards = [];
-let flippedCards = [];
-let moves = 0;
-let matches = 0;
-
-const memoryEmojis = ['🌸', '🌹', '💐', '🌺', '🌷', '🌼', '💖', '🌟'];
-
+// MEMORY OYUNU
 function startMemoryGame() {
   hideAllGames();
   document.getElementById('memoryGame').style.display = 'block';
@@ -638,94 +709,33 @@ function startMemoryGame() {
 function resetMemoryGame() {
   const grid = document.getElementById('memoryGrid');
   grid.innerHTML = '';
-  memoryCards = [];
-  flippedCards = [];
-  moves = 0;
-  matches = 0;
-  document.getElementById('moves').innerText = moves;
+  const emojis = ['🌸', '🌹', '💐', '🌺', '🌷', '🌼', '💖', '🌟'];
+  let cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
   
-  let cards = [];
-  memoryEmojis.forEach(emoji => {
-    cards.push(emoji, emoji);
-  });
-  
-  cards.sort(() => Math.random() - 0.5);
-  
-  cards.forEach((emoji, index) => {
+  cards.forEach((emoji, i) => {
     const card = document.createElement('div');
     card.className = 'memory-card';
-    card.dataset.index = index;
-    card.dataset.emoji = emoji;
-    card.onclick = () => flipCard(card);
+    card.textContent = emoji;
+    card.style.color = 'transparent';
+    card.onclick = () => {
+      if (card.style.color === 'transparent') {
+        card.style.color = 'white';
+        card.style.background = '#4ade80';
+        setTimeout(() => {
+          if (card.style.color !== 'transparent') {
+            card.style.color = 'transparent';
+            card.style.background = 'linear-gradient(45deg, #e11d48, #d63384)';
+          }
+        }, 1000);
+      }
+    };
     grid.appendChild(card);
-    memoryCards.push(card);
   });
 }
 
-function flipCard(card) {
-  if(flippedCards.length >= 2 || card.classList.contains('revealed') || card.classList.contains('matched')) return;
-  
-  card.classList.add('revealed');
-  card.textContent = card.dataset.emoji;
-  flippedCards.push(card);
-  
-  if(flippedCards.length === 2) {
-    moves++;
-    document.getElementById('moves').innerText = moves;
-    
-    const [card1, card2] = flippedCards;
-    if(card1.dataset.emoji === card2.dataset.emoji) {
-      card1.classList.add('matched');
-      card2.classList.add('matched');
-      matches++;
-      spawnConfetti(card1.offsetLeft, card1.offsetTop, 10);
-      if(matches === memoryEmojis.length) {
-        setTimeout(() => alert(`Tebrikler! B12'n tazelendi! 🧠 ${moves} hamlede tamamladın!`), 500);
-      }
-    } else {
-      setTimeout(() => {
-        card1.classList.remove('revealed');
-        card2.classList.remove('revealed');
-        card1.textContent = '';
-        card2.textContent = '';
-      }, 1000);
-    }
-    setTimeout(() => flippedCards = [], 1000);
-  }
-}
-
-function hideAllGames() {
-  // Çiçek oyununu durdur
-  stopFlowerGame();
-  
-  document.getElementById('flowerGame').style.display = 'none';
-  document.getElementById('drawingGame').style.display = 'none';
-  document.getElementById('memoryGame').style.display = 'none';
-}
-
-hideAllGames();
-
-// Video kontrol
-document.getElementById('backgroundVideo').addEventListener('loadeddata', function() {
-  console.log('✅ Video arkaplan yüklendi!');
-});
-
-// Sayfa boyutu değişince canvas'ları güncelle
-window.addEventListener('resize', function() {
-  const flowerCanvas = document.getElementById('gameCanvas');
-  const drawCanvas = document.getElementById('drawCanvas');
-  
-  if (flowerCanvas) {
-    const rect = flowerCanvas.getBoundingClientRect();
-    flowerCanvas.width = rect.width;
-    flowerCanvas.height = rect.height;
-  }
-  
-  if (drawCanvas) {
-    const rect = drawCanvas.getBoundingClientRect();
-    drawCanvas.width = rect.width;
-    drawCanvas.height = rect.height;
-  }
+// SAYFA YUKLENDIGINDE
+window.addEventListener('load', () => {
+  console.log('🚀 Site mobil uyumlu yüklendi!');
 });
 </script>
 </body>
