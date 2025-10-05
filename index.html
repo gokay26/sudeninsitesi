@@ -7,16 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
   :root{--rose:#e11d48;--soft:#fff0f6;--card-shadow:0 10px 30px rgba(17,24,39,0.08)}
-  *{box-sizing:border-box}html,body{height:100%;margin:0;font-family:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#111;background:linear-gradient(135deg,#ffe6f0 0%,#fff0f6 40%,#ffe6f0 100%);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  *{box-sizing:border-box}html,body{height:100%;margin:0;font-family:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#111;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   
-  /* VIDEO ARKAPLAN - KESİN ÇALIŞAN */
-  .video-background {
+  /* VIDEO ARKAPLAN */
+  #backgroundVideo {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
     z-index: -1;
     opacity: 0.4;
   }
@@ -178,7 +179,6 @@
     .memory-grid { grid-template-columns: repeat(4, 1fr); }
     .memory-card { width: 70px; height: 70px; font-size: 20px; }
     #drawCanvas { width: 100% !important; height: 300px !important; }
-    .video-background { opacity: 0.3; }
   }
 
   .daily-limit {
@@ -189,16 +189,15 @@
 </style>
 </head>
 <body>
-<!-- VIDEO ARKAPLAN - GITHUB LINKIYLE -->
-<video class="video-background" id="rainVideo" autoplay muted loop playsinline>
-  <source src="https://raw.githubusercontent.com/gokay26/sudeninsitesi/refs/heads/main/rain-video.mp4" type="video/mp4">
+<!-- VIDEO ARKAPLAN -->
+<video id="backgroundVideo" autoplay muted loop playsinline>
+  <source src="rain-video.mp4" type="video/mp4">
 </video>
 
-<!-- BUTONLAR -->
 <button id="musicToggle">Müziği Aç</button>
 <button id="rainToggle">Yağmur: Açık</button>
 <div id="fortuneBox">
-  <button id="fortuneBtn">🔮 Bugünkü Falın</button>
+  <button id="fortuneBtn" title="Sude bugün nasıl hissedecek?">🔮 Bugünkü Falın</button>
   <div id="fortuneMsg"></div>
 </div>
 
@@ -207,10 +206,9 @@
   <h1>Senin İçin Sude :)</h1>
   <p class="lead">Geri sayımı bekleee 💕</p>
   <div class="hero">
-    <img src="https://raw.githubusercontent.com/gokay26/sudeninsitesi/refs/heads/main/photo1.png" alt="Sude" class="photo"/>
+    <img src="photo1.png" alt="Sude" class="photo"/>
     <div class="countdown">
-      <div class="time" id="cd-mins">00</div>
-      <div class="time" id="cd-secs">00</div>
+      <div class="time" id="cd-secs">10</div>
     </div>
     <div id="message">İyi ki varsın Sude 🌸</div>
     
@@ -221,6 +219,7 @@
     </div>
   </div>
 
+  <!-- Flower Game -->
   <div class="game-area" id="flowerGame">
     <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px">Çiçeklere tıkla! 🌸 (Maksimum 3 kaçırma hakkın var!)</p>
     <canvas id="gameCanvas" width="600" height="300"></canvas>
@@ -228,8 +227,10 @@
       Toplanan Çiçek: <span id="score">0</span> / <span id="target">10</span> | 
       Kaçırılan: <span id="missed">0</span> / 3
     </div>
+    <button class="btn" onclick="resetFlowerGame()">Yeniden Başla</button>
   </div>
 
+  <!-- Drawing Game -->
   <div class="game-area" id="drawingGame">
     <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px">Haydi güzel şeyler çiz! 🎨</p>
     <canvas id="drawCanvas" width="600" height="400"></canvas>
@@ -246,6 +247,7 @@
     <p style="color:#6b7280;font-size:14px;margin-top:10px">Fareyi/tuşu basılı tutarak çizim yapabilirsin</p>
   </div>
 
+  <!-- Memory Game -->
   <div class="game-area" id="memoryGame">
     <p style="text-align:center;color:#d63384;font-weight:700;margin-bottom:10px">B12 vitaminin tazelensin! 🧠</p>
     <div class="memory-grid" id="memoryGrid"></div>
@@ -255,30 +257,21 @@
 </div>
 
 <script>
-// MÜZİK - GITHUB LINKIYLE
-const audio = new Audio('https://raw.githubusercontent.com/gokay26/sudeninsitesi/refs/heads/main/music.mp3');
+// Müzik
+const audio = new Audio('music.mp3');
 audio.loop = true;
 let musicOn = false;
 
-// YAĞMUR SESİ - GITHUB LINKIYLE
-const rainAudio = new Audio('https://raw.githubusercontent.com/gokay26/sudeninsitesi/refs/heads/main/rain-sound.mp3');
+// Yağmur sesi - AYARLANDI (%20)
+const rainAudio = new Audio('rain-sound.mp3');
 rainAudio.loop = true;
-rainAudio.volume = 0.2;
+rainAudio.volume = 0.2; // %20 ses - dengeli
 
 let rainOn = true;
 
-// Video yüklendi mi kontrol et
-document.getElementById('rainVideo').addEventListener('loadeddata', function() {
-  console.log('✅ Video yüklendi!');
-});
-
-document.getElementById('rainVideo').addEventListener('error', function(e) {
-  console.log('❌ Video hatası:', e);
-});
-
 // Yağmur kontrolü
 document.getElementById('rainToggle').addEventListener('click', () => {
-  const rainVideo = document.getElementById('rainVideo');
+  const rainVideo = document.getElementById('backgroundVideo');
   const rainBtn = document.getElementById('rainToggle');
   
   if (rainOn) {
@@ -288,7 +281,7 @@ document.getElementById('rainToggle').addEventListener('click', () => {
     rainBtn.style.background = '#6b7280';
   } else {
     rainVideo.style.display = 'block';
-    rainAudio.play().catch(e => console.log('Rain audio requires interaction'));
+    rainAudio.play();
     rainBtn.textContent = 'Yağmur: Açık';
     rainBtn.style.background = '#06b6d4';
   }
@@ -301,7 +294,7 @@ document.getElementById('musicToggle').addEventListener('click', () => {
     audio.play().then(() => {
       musicOn = true;
       document.getElementById('musicToggle').innerText = 'Müziği Kapat';
-    }).catch(() => alert('Müzik için butona tıklayın.'));
+    }).catch(() => alert('Tarayıcı otomatik oynatma engelledi, tekrar deneyin.'));
   } else {
     audio.pause();
     musicOn = false;
@@ -311,14 +304,13 @@ document.getElementById('musicToggle').addEventListener('click', () => {
 
 // Geri sayım 10 saniye
 let remaining = 10;
-const cdMins = document.getElementById('cd-mins');
 const cdSecs = document.getElementById('cd-secs');
 function updateClock(){
-  const mins = Math.floor(remaining/60);
-  const secs = remaining % 60;
-  cdMins.innerText = String(mins).padStart(2,'0');
-  cdSecs.innerText = String(secs).padStart(2,'0');
-  if(remaining<=0){ clearInterval(clockInterval); reveal(); }
+  cdSecs.innerText = String(remaining).padStart(2,'0');
+  if(remaining <= 0){ 
+    clearInterval(clockInterval); 
+    reveal(); 
+  }
   remaining--;
 }
 const clockInterval = setInterval(updateClock, 1000);
@@ -329,7 +321,7 @@ function reveal(){
   spawnConfetti(window.innerWidth/2, window.innerHeight/3, 150);
 }
 
-// Confetti ve diğer tüm kodlar aynı...
+// Confetti
 const confetti = document.getElementById('confetti');
 const cctx = confetti.getContext('2d');
 function resizeConf(){ confetti.width = innerWidth; confetti.height = innerHeight; }
@@ -358,6 +350,7 @@ function confStep(){
 }
 confStep();
 
+// Fal sistemi
 const fortunes = [
   "Bugün enerjinle herkesi büyüleyeceksin ✨",
   "Kalbin sıcacık, gülümsemen ışıl ışıl olacak 🌟",
@@ -407,9 +400,22 @@ window.addEventListener('load', () => {
   }
 });
 
-// Oyun kodları (kısaltılmış)
+// ÇİÇEK OYUNU - DÜZELTİLDİ
 let flowerGameRunning = false;
 let flowers = [], score = 0, target = 10, missedFlowers = 0;
+let flowerInterval, spawnInterval;
+
+function stopFlowerGame() {
+  flowerGameRunning = false;
+  if (flowerInterval) clearInterval(flowerInterval);
+  if (spawnInterval) clearInterval(spawnInterval);
+  flowers = [];
+}
+
+function resetFlowerGame() {
+  stopFlowerGame();
+  startFlowerGame();
+}
 
 function startFlowerGame() {
   hideAllGames();
@@ -417,7 +423,10 @@ function startFlowerGame() {
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   
-  flowers = []; score = 0; missedFlowers = 0;
+  // Oyunu sıfırla
+  flowers = []; 
+  score = 0; 
+  missedFlowers = 0;
   document.getElementById('score').innerText = score;
   document.getElementById('missed').innerText = missedFlowers;
   flowerGameRunning = true;
@@ -432,17 +441,19 @@ function startFlowerGame() {
       ctx.beginPath();
       ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
       ctx.fill();
+      
       if(f.y > canvas.height + 40) {
         flowers.splice(i,1);
         missedFlowers++;
         document.getElementById('missed').innerText = missedFlowers;
+        
         if(missedFlowers >= 3) {
-          flowerGameRunning = false;
+          stopFlowerGame();
           setTimeout(() => alert('Üzgünüm! 3 çiçek kaçırdın. Yeniden dene! 🌸'), 300);
         }
       }
     }
-    requestAnimationFrame(updateGame);
+    flowerInterval = requestAnimationFrame(updateGame);
   }
 
   function spawnFlower(){
@@ -459,7 +470,7 @@ function startFlowerGame() {
   function spawnLoop(){
     if(!flowerGameRunning) return;
     spawnFlower();
-    setTimeout(spawnLoop, 800);
+    spawnInterval = setTimeout(spawnLoop, 800);
   }
 
   canvas.onclick = (ev)=>{
@@ -475,8 +486,8 @@ function startFlowerGame() {
         document.getElementById('score').innerText = score;
         spawnConfetti(x+rect.left, y+rect.top, 20);
         if(score >= target){
-          flowerGameRunning = false;
-          setTimeout(() => alert('Tebrikler! Tüm çiçekleri topladın! 🌸'), 300);
+          stopFlowerGame();
+          setTimeout(() => alert('nayss kızım sanaa 🌸'), 300); // DEĞİŞTİRİLDİ
         }
         break;
       }
@@ -493,64 +504,152 @@ let isDrawing = false;
 function startDrawingGame() {
   hideAllGames();
   document.getElementById('drawingGame').style.display = 'block';
+  
   const canvas = document.getElementById('drawCanvas');
   const ctx = canvas.getContext('2d');
+  
   ctx.fillStyle = '#fff0f6';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
   canvas.onmousedown = startDrawing;
   canvas.onmousemove = draw;
   canvas.onmouseup = stopDrawing;
   canvas.onmouseout = stopDrawing;
-  canvas.ontouchstart = (e) => { e.preventDefault(); startDrawing(e.touches[0]); };
-  canvas.ontouchmove = (e) => { e.preventDefault(); draw(e.touches[0]); };
+  
+  canvas.ontouchstart = (e) => {
+    e.preventDefault();
+    startDrawing(e.touches[0]);
+  };
+  canvas.ontouchmove = (e) => {
+    e.preventDefault();
+    draw(e.touches[0]);
+  };
   canvas.ontouchend = stopDrawing;
 }
 
-function startDrawing(e) { isDrawing = true; draw(e); }
+function startDrawing(e) {
+  isDrawing = true;
+  draw(e);
+}
+
 function draw(e) {
   if (!isDrawing) return;
+  
   const canvas = document.getElementById('drawCanvas');
   const ctx = canvas.getContext('2d');
   const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left; const y = e.clientY - rect.top;
-  ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = 3; ctx.strokeStyle = currentColor;
-  ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+  
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = currentColor;
+  
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
 }
-function stopDrawing() { isDrawing = false; document.getElementById('drawCanvas').getContext('2d').beginPath(); }
-function setColor(color) { currentColor = color; document.querySelectorAll('.color-btn').forEach(btn => { btn.classList.remove('active'); }); event.target.classList.add('active'); }
-function clearCanvas() { const canvas = document.getElementById('drawCanvas'); const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff0f6'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
 
-let memoryCards = []; let flippedCards = []; let moves = 0; let matches = 0;
+function stopDrawing() {
+  isDrawing = false;
+  const ctx = document.getElementById('drawCanvas').getContext('2d');
+  ctx.beginPath();
+}
+
+function setColor(color) {
+  currentColor = color;
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+}
+
+function clearCanvas() {
+  const canvas = document.getElementById('drawCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff0f6';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+let memoryCards = [];
+let flippedCards = [];
+let moves = 0;
+let matches = 0;
+
 const memoryEmojis = ['🌸', '🌹', '💐', '🌺', '🌷', '🌼', '💖', '🌟'];
 
-function startMemoryGame() { hideAllGames(); document.getElementById('memoryGame').style.display = 'block'; resetMemoryGame(); }
+function startMemoryGame() {
+  hideAllGames();
+  document.getElementById('memoryGame').style.display = 'block';
+  resetMemoryGame();
+}
+
 function resetMemoryGame() {
-  const grid = document.getElementById('memoryGrid'); grid.innerHTML = '';
-  memoryCards = []; flippedCards = []; moves = 0; matches = 0; document.getElementById('moves').innerText = moves;
-  let cards = []; memoryEmojis.forEach(emoji => { cards.push(emoji, emoji); });
+  const grid = document.getElementById('memoryGrid');
+  grid.innerHTML = '';
+  memoryCards = [];
+  flippedCards = [];
+  moves = 0;
+  matches = 0;
+  document.getElementById('moves').innerText = moves;
+  
+  let cards = [];
+  memoryEmojis.forEach(emoji => {
+    cards.push(emoji, emoji);
+  });
+  
   cards.sort(() => Math.random() - 0.5);
+  
   cards.forEach((emoji, index) => {
-    const card = document.createElement('div'); card.className = 'memory-card'; card.dataset.index = index; card.dataset.emoji = emoji;
-    card.onclick = () => flipCard(card); grid.appendChild(card); memoryCards.push(card);
+    const card = document.createElement('div');
+    card.className = 'memory-card';
+    card.dataset.index = index;
+    card.dataset.emoji = emoji;
+    card.onclick = () => flipCard(card);
+    grid.appendChild(card);
+    memoryCards.push(card);
   });
 }
 
 function flipCard(card) {
   if(flippedCards.length >= 2 || card.classList.contains('revealed') || card.classList.contains('matched')) return;
-  card.classList.add('revealed'); card.textContent = card.dataset.emoji; flippedCards.push(card);
+  
+  card.classList.add('revealed');
+  card.textContent = card.dataset.emoji;
+  flippedCards.push(card);
+  
   if(flippedCards.length === 2) {
-    moves++; document.getElementById('moves').innerText = moves;
+    moves++;
+    document.getElementById('moves').innerText = moves;
+    
     const [card1, card2] = flippedCards;
     if(card1.dataset.emoji === card2.dataset.emoji) {
-      card1.classList.add('matched'); card2.classList.add('matched'); matches++;
+      card1.classList.add('matched');
+      card2.classList.add('matched');
+      matches++;
       spawnConfetti(card1.offsetLeft, card1.offsetTop, 10);
-      if(matches === memoryEmojis.length) { setTimeout(() => alert(`Tebrikler! B12'n tazelendi! 🧠 ${moves} hamlede tamamladın!`), 500); }
-    } else { setTimeout(() => { card1.classList.remove('revealed'); card2.classList.remove('revealed'); card1.textContent = ''; card2.textContent = ''; }, 1000); }
+      if(matches === memoryEmojis.length) {
+        setTimeout(() => alert(`Tebrikler! B12'n tazelendi! 🧠 ${moves} hamlede tamamladın!`), 500);
+      }
+    } else {
+      setTimeout(() => {
+        card1.classList.remove('revealed');
+        card2.classList.remove('revealed');
+        card1.textContent = '';
+        card2.textContent = '';
+      }, 1000);
+    }
     setTimeout(() => flippedCards = [], 1000);
   }
 }
 
 function hideAllGames() {
+  // Çiçek oyununu durdur
+  stopFlowerGame();
+  
   document.getElementById('flowerGame').style.display = 'none';
   document.getElementById('drawingGame').style.display = 'none';
   document.getElementById('memoryGame').style.display = 'none';
@@ -558,8 +657,10 @@ function hideAllGames() {
 
 hideAllGames();
 
-// Sayfa yüklendiğinde konsola yaz
-console.log('🚀 Site yüklendi! Video ve sesler GitHub linkleriyle çalışıyor.');
+// Video kontrol
+document.getElementById('backgroundVideo').addEventListener('loadeddata', function() {
+  console.log('✅ Video arkaplan yüklendi!');
+});
 </script>
 </body>
 </html>
