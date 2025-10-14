@@ -21,153 +21,168 @@
     opacity: 0.4;
   }
 
-  /* YENİ: GERÇEK PENCERE YANSIMASI */
-  .reflection-container {
-    width: 90%;
-    max-width: 600px;
-    margin: 20px auto;
+  /* GERÇEK PENCERE YANSIMASI - FLU VE GERÇEKÇİ */
+  .window-container {
+    width: 95%;
+    max-width: 500px;
+    margin: 25px auto;
     position: relative;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 15px;
-    padding: 15px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    border-radius: 12px;
+    padding: 20px;
     box-shadow: 
-      0 20px 40px rgba(0,0,0,0.5),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.1);
+      0 25px 50px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.3),
+      0 0 0 1px rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .window-frame {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 
+      inset 0 0 30px rgba(255,255,255,0.1),
+      0 10px 30px rgba(0,0,0,0.8);
   }
 
   #reflectionVideo {
     width: 100%;
-    height: 200px;
-    border-radius: 8px;
-    display: block;
-    background: #000;
-    transform: perspective(1000px) rotateX(2deg);
-    border: 1px solid rgba(255,255,255,0.3);
+    height: 100%;
     object-fit: cover;
-    box-shadow: 
-      inset 0 0 20px rgba(255,255,255,0.1),
-      0 0 30px rgba(0,0,0,0.8);
+    filter: blur(1.5px) brightness(1.1) contrast(1.1);
+    transform: scale(1.02);
   }
 
-  /* GERÇEK YANSIMA EFEKTİ */
-  .reflection-overlay {
+  /* PENCERE CAM EFEKTİ */
+  .window-glass {
     position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: 
-      linear-gradient(135deg, 
-        rgba(255,255,255,0.1) 0%,
-        transparent 20%,
-        rgba(255,255,255,0.05) 50%,
-        transparent 80%,
-        rgba(255,255,255,0.1) 100%);
-    border-radius: 8px;
+      linear-gradient(125deg, 
+        transparent 0%,
+        rgba(255,255,255,0.03) 30%,
+        rgba(255,255,255,0.01) 50%,
+        rgba(255,255,255,0.03) 70%,
+        transparent 100%);
     pointer-events: none;
     mix-blend-mode: overlay;
   }
 
-  .video-reflection {
+  .window-reflection {
     position: absolute;
-    bottom: -40px;
-    left: 5%;
-    width: 90%;
-    height: 30px;
+    bottom: -50px;
+    left: 10%;
+    width: 80%;
+    height: 40px;
     background: linear-gradient(to bottom, 
-      rgba(255,255,255,0.3) 0%,
-      rgba(255,255,255,0.1) 30%,
+      rgba(255,255,255,0.4) 0%,
+      rgba(255,255,255,0.2) 20%,
+      rgba(255,255,255,0.1) 40%,
       transparent 100%);
     border-radius: 50%;
-    filter: blur(8px);
-    transform: scaleY(-0.4) rotateX(180deg);
-    opacity: 0.4;
+    filter: blur(12px);
+    transform: scaleY(-0.3);
+    opacity: 0.6;
   }
 
   /* ŞARKI BAŞLIĞI */
   .song-title {
     text-align: center;
-    margin-top: 10px;
-    font-size: 14px;
+    margin-top: 15px;
+    font-size: 15px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     font-style: italic;
   }
 
-  /* SES KONTROLLERİ - DÜZELTİLDİ */
+  /* SES KONTROLLERİ - MOBİL UYUMLU */
   .volume-controls {
     position: fixed;
-    top: 60px;
-    left: 10px;
+    top: 70px;
+    left: 15px;
     z-index: 10000;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.98);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
     display: none;
+    min-width: 180px;
+    backdrop-filter: blur(10px);
   }
 
   .volume-control {
-    margin: 10px 0;
+    margin: 12px 0;
   }
 
   .volume-control label {
     display: block;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 
   .volume-control input {
-    width: 140px;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
   }
 
   /* KAPATMA BUTONU */
   .close-volume {
     position: absolute;
-    top: 5px;
-    right: 8px;
+    top: 8px;
+    right: 12px;
     background: none;
     border: none;
-    font-size: 16px;
+    font-size: 18px;
     cursor: pointer;
     color: #666;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 50%;
   }
 
   .close-volume:hover {
+    background: #f0f0f0;
     color: #e11d48;
   }
 
-  /* BUTONLAR - MOBIL ICIN YENIDEN */
+  /* BUTONLAR - TELEFON İÇİN DÜZENLENDİ */
   .control-buttons {
     position: fixed;
-    top: 10px;
-    left: 10px;
+    top: 15px;
+    left: 15px;
     z-index: 10000;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
   }
 
   .control-btn {
     background: #e11d48;
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 20px;
+    padding: 12px 16px;
+    border-radius: 25px;
     font-weight: 700;
-    font-size: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    font-size: 13px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     cursor: pointer;
     white-space: nowrap;
+    min-width: 120px;
+    text-align: center;
   }
 
   #rainToggle { background: #06b6d4; }
@@ -175,8 +190,8 @@
 
   #fortuneBox {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     z-index: 10000;
   }
 
@@ -184,117 +199,123 @@
     background: #e11d48;
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+    padding: 12px 16px;
+    border-radius: 25px;
+    font-size: 13px;
     font-weight: 700;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     cursor: pointer;
+    min-width: 140px;
+    text-align: center;
   }
 
   #fortuneMsg {
     position: absolute;
     top: 100%;
     right: 0;
-    margin-top: 5px;
+    margin-top: 8px;
     background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     display: none;
-    max-width: 200px;
-    font-size: 12px;
+    max-width: 250px;
+    font-size: 13px;
     font-weight: 600;
     color: #d63384;
     border: 2px solid #ffe6f0;
+    z-index: 10001;
   }
 
-  /* ANA ICERIK */
+  /* ANA ICERIK - MOBİL UYUMLU */
   .wrap {
     max-width: 100%;
-    padding: 70px 15px 20px;
+    padding: 100px 15px 30px;
     margin: 0 auto;
   }
 
   h1 {
-    font-size: 24px;
+    font-size: 26px;
     text-align: center;
     color: #d63384;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    padding: 0 10px;
   }
 
   .lead {
     text-align: center;
     color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 15px;
+    margin-bottom: 25px;
+    padding: 0 10px;
   }
 
   .hero {
     background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
   }
 
   .photo {
     width: 100%;
-    max-width: 300px;
-    border-radius: 10px;
-    margin-bottom: 15px;
+    max-width: 280px;
+    border-radius: 12px;
+    margin-bottom: 18px;
   }
 
   .countdown {
     display: flex;
     justify-content: center;
-    margin: 15px 0;
+    margin: 18px 0;
   }
 
   .time {
     background: white;
-    padding: 12px 20px;
-    border-radius: 10px;
+    padding: 15px 25px;
+    border-radius: 12px;
     font-weight: 700;
-    font-size: 18px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-size: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   }
 
   #message {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     color: #e11d48;
-    margin: 20px 0;
+    margin: 25px 0;
     display: none;
   }
 
-  /* OYUN BUTONLARI */
+  /* OYUN BUTONLARI - MOBİL */
   .game-selection {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 25px;
   }
 
   .game-btn {
     background: linear-gradient(45deg, #e11d48, #d63384);
     color: white;
     border: none;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 18px;
+    border-radius: 15px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
   }
 
   /* OYUN ALANLARI */
   .game-area {
     background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    margin-top: 20px;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    margin-top: 25px;
     display: none;
   }
 
@@ -302,16 +323,16 @@
     text-align: center;
     color: #d63384;
     font-weight: 700;
-    margin-bottom: 15px;
-    font-size: 16px;
+    margin-bottom: 18px;
+    font-size: 17px;
   }
 
   /* CICEK OYUNU */
   #gameCanvas {
     width: 100%;
-    height: 200px;
+    height: 220px;
     background: #f9f9f9;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 2px solid #ffe6f0;
     display: block;
     margin: 0 auto;
@@ -319,30 +340,31 @@
 
   .scoreboard {
     text-align: center;
-    margin: 10px 0;
+    margin: 12px 0;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .action-btn {
     background: #e11d48;
     color: white;
     border: none;
-    padding: 12px 25px;
+    padding: 15px 30px;
     border-radius: 25px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     display: block;
-    margin: 15px auto 0;
+    margin: 18px auto 0;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
   }
 
-  /* CIZIM OYUNU - DÜZELTİLDİ */
+  /* CIZIM OYUNU */
   #drawCanvas {
     width: 100%;
-    height: 250px;
+    height: 280px;
     background: #fff0f6;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 2px solid #ffe6f0;
     display: block;
     margin: 0 auto;
@@ -353,37 +375,39 @@
   .drawing-controls {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin: 15px 0;
+    gap: 10px;
+    margin: 18px 0;
     flex-wrap: wrap;
     align-items: center;
   }
 
   .color-btn {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     border: 2px solid white;
     cursor: pointer;
     transition: transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
 
   .color-btn.active {
     border-color: #333;
     transform: scale(1.2);
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    box-shadow: 0 0 8px rgba(0,0,0,0.4);
   }
 
   .tool-btn {
     background: #6b7280;
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 15px;
-    font-size: 11px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
 
   .tool-btn.active {
@@ -391,27 +415,28 @@
     transform: scale(1.05);
   }
 
-  /* MEMORY OYUNU - DÜZELTİLDİ */
+  /* MEMORY OYUNU */
   .memory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin: 15px auto;
-    max-width: 300px;
+    gap: 10px;
+    margin: 18px auto;
+    max-width: 320px;
   }
 
   .memory-card {
     aspect-ratio: 1;
     background: linear-gradient(45deg, #e11d48, #d63384);
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 22px;
     color: transparent;
     cursor: pointer;
     transition: all 0.3s;
     user-select: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   }
 
   .memory-card.revealed {
@@ -437,24 +462,38 @@
 
   /* TABLET */
   @media (min-width: 768px) {
-    .wrap { max-width: 700px; padding: 80px 20px 30px; }
-    h1 { font-size: 28px; }
+    .wrap { max-width: 700px; padding: 120px 20px 40px; }
+    h1 { font-size: 32px; }
     .game-selection { grid-template-columns: repeat(3, 1fr); }
-    .control-buttons { top: 20px; left: 20px; }
-    #fortuneBox { top: 20px; right: 20px; }
-    .volume-controls { top: 80px; left: 20px; }
-    #gameCanvas { height: 250px; }
-    #drawCanvas { height: 300px; }
-    #reflectionVideo { height: 250px; }
+    .control-buttons { top: 25px; left: 25px; }
+    #fortuneBox { top: 25px; right: 25px; }
+    .volume-controls { top: 90px; left: 25px; }
+    #gameCanvas { height: 280px; }
+    #drawCanvas { height: 350px; }
+    .window-container { max-width: 600px; }
+    .window-frame { height: 280px; }
     .memory-grid { max-width: 400px; }
   }
 
   /* PC */
   @media (min-width: 1024px) {
     .wrap { max-width: 900px; }
-    #gameCanvas { height: 300px; }
-    #drawCanvas { height: 350px; }
-    #reflectionVideo { height: 300px; }
+    #gameCanvas { height: 320px; }
+    #drawCanvas { height: 400px; }
+    .window-frame { height: 320px; }
+  }
+
+  /* KÜÇÜK TELEFONLAR */
+  @media (max-width: 360px) {
+    .control-buttons { left: 10px; }
+    #fortuneBox { right: 10px; }
+    .volume-controls { left: 10px; }
+    .control-btn, #fortuneBtn { 
+      padding: 10px 12px; 
+      font-size: 12px;
+      min-width: 110px;
+    }
+    .wrap { padding: 90px 10px 20px; }
   }
 </style>
 </head>
@@ -471,7 +510,7 @@
   <button id="volumeToggle" class="control-btn">Ses Ayarları</button>
 </div>
 
-<!-- SES KONTROLLERİ - KAPATMA BUTONLU -->
+<!-- SES KONTROLLERİ -->
 <div class="volume-controls" id="volumeControls">
   <button class="close-volume" onclick="closeVolumeControls()">×</button>
   <div class="volume-control">
@@ -511,17 +550,19 @@
     </div>
   </div>
 
-  <!-- YENİ: GERÇEK PENCERE YANSIMASI -->
-  <div class="reflection-container">
-    <video id="reflectionVideo" loop playsinline>
-      <source src="yansıma.mp4" type="video/mp4">
-    </video>
-    <div class="reflection-overlay"></div>
-    <div class="video-reflection"></div>
+  <!-- GERÇEK PENCERE YANSIMASI -->
+  <div class="window-container">
+    <div class="window-frame">
+      <video id="reflectionVideo" loop playsinline muted>
+        <source src="yansıma.mp4" type="video/mp4">
+      </video>
+      <div class="window-glass"></div>
+    </div>
+    <div class="window-reflection"></div>
     <div class="song-title">Günün şarkısı "Dilerim Ki"</div>
   </div>
 
-  <!-- CICEK OYUNU -->
+  <!-- OYUN ALANLARI -->
   <div class="game-area" id="flowerGame">
     <div class="game-title">Çiçeklere tıkla! 🌸 (Maksimum 3 kaçırma hakkın var!)</div>
     <canvas id="gameCanvas"></canvas>
@@ -532,7 +573,6 @@
     <button class="action-btn" onclick="resetFlowerGame()">Yeniden Başla</button>
   </div>
 
-  <!-- CIZIM OYUNU -->
   <div class="game-area" id="drawingGame">
     <div class="game-title">Haydi güzel şeyler çiz! 🎨</div>
     <canvas id="drawCanvas"></canvas>
@@ -546,11 +586,10 @@
       <button class="color-btn" style="background:#06b6d4" onclick="setColor('#06b6d4')"></button>
       <button class="color-btn" style="background:#10b981" onclick="setColor('#10b981')"></button>
       <button class="color-btn" style="background:#000000" onclick="setColor('#000000')"></button>
-      <button class="action-btn" onclick="clearCanvas()" style="padding: 8px 15px; margin: 0;">Temizle</button>
+      <button class="action-btn" onclick="clearCanvas()" style="padding: 10px 20px; margin: 0;">Temizle</button>
     </div>
   </div>
 
-  <!-- MEMORY OYUNU -->
   <div class="game-area" id="memoryGame">
     <div class="game-title">B12 vitaminin tazelensin! 🧠</div>
     <div class="memory-grid" id="memoryGrid"></div>
@@ -560,22 +599,36 @@
 </div>
 
 <script>
-// YENİ SES SİSTEMİ - MP4'TEN MÜZİK
+// SES SİSTEMİ - MOBİL UYUMLU
 const reflectionVideo = document.getElementById('reflectionVideo');
 let musicOn = false;
+let userInteracted = false;
 
 const rainAudio = new Audio('rain-sound.mp3');
 rainAudio.loop = true;
 rainAudio.volume = 0.2;
 let rainOn = true;
 
-// SES KONTROLLERİ - DÜZELTİLDİ
+// KULLANICI ETKİLEŞİMİ BEKLE
+function enableAudio() {
+  if (!userInteracted) {
+    userInteracted = true;
+    // Ses kontrollerini aktif et
+    document.getElementById('musicVolume').dispatchEvent(new Event('input'));
+    document.getElementById('rainVolume').dispatchEvent(new Event('input'));
+  }
+}
+
+// SAYFAYA TIKLAYINCA SESİ AKTİF ET
+document.addEventListener('click', enableAudio);
+document.addEventListener('touchstart', enableAudio);
+
+// SES KONTROLLERİ
 document.getElementById('volumeToggle').addEventListener('click', () => {
   const volumeControls = document.getElementById('volumeControls');
   volumeControls.style.display = volumeControls.style.display === 'block' ? 'none' : 'block';
 });
 
-// SES KONTROLLERİNİ KAPATMA
 function closeVolumeControls() {
   document.getElementById('volumeControls').style.display = 'none';
 }
@@ -592,21 +645,32 @@ document.addEventListener('click', function(event) {
   }
 });
 
-// MÜZİK SES KONTROLÜ - YENİ MP4 İÇİN
+// SES KONTROLLERİ
 document.getElementById('musicVolume').addEventListener('input', function() {
-  reflectionVideo.volume = this.value / 100;
+  if (userInteracted) {
+    reflectionVideo.volume = this.value / 100;
+  }
 });
 
 document.getElementById('rainVolume').addEventListener('input', function() {
-  rainAudio.volume = this.value / 100;
+  if (userInteracted) {
+    rainAudio.volume = this.value / 100;
+  }
 });
 
-// BUTON KONTROLLERI
-document.getElementById('musicToggle').addEventListener('click', () => {
+// MÜZİK BUTONU
+document.getElementById('musicToggle').addEventListener('click', function() {
+  if (!userInteracted) {
+    enableAudio();
+  }
+  
   if (!musicOn) {
+    reflectionVideo.muted = false;
     reflectionVideo.play().then(() => {
       musicOn = true;
       document.getElementById('musicToggle').innerText = 'Müziği Kapat';
+    }).catch(e => {
+      console.log('Video play hatası:', e);
     });
   } else {
     reflectionVideo.pause();
@@ -615,13 +679,18 @@ document.getElementById('musicToggle').addEventListener('click', () => {
   }
 });
 
-document.getElementById('rainToggle').addEventListener('click', () => {
+// YAĞMUR BUTONU
+document.getElementById('rainToggle').addEventListener('click', function() {
+  if (!userInteracted) {
+    enableAudio();
+  }
+  
   const video = document.getElementById('backgroundVideo');
   rainOn = !rainOn;
   
   if (rainOn) {
     video.style.display = 'block';
-    rainAudio.play();
+    rainAudio.play().catch(e => console.log('Rain audio hatası:', e));
     document.getElementById('rainToggle').textContent = 'Yağmur: Açık';
     document.getElementById('rainToggle').style.background = '#06b6d4';
   } else {
@@ -631,6 +700,10 @@ document.getElementById('rainToggle').addEventListener('click', () => {
     document.getElementById('rainToggle').style.background = '#6b7280';
   }
 });
+
+// GERİ SAYIM VE DİĞER KODLAR AYNI KALDI...
+// (Önceki kodun geri kalanı aynı şekilde devam edecek)
+// ... (önceki JavaScript kodunun devamı)
 
 // GERI SAYIM
 let remaining = 10;
@@ -1077,8 +1150,8 @@ function flipCard(card) {
 // SAYFA YUKLENDIGINDE
 window.addEventListener('load', () => {
   console.log('🚀 Site mobil uyumlu yüklendi!');
-  // Yansıma videosunu başlat (ses kapalı başlasın)
-  reflectionVideo.volume = 0.5; // Varsayılan ses seviyesi
+  // Video muted başlasın, kullanıcı etkileşiminden sonra açılsın
+  reflectionVideo.volume = 0;
 });
 
 // Sayfa boyutu değişince canvas'ları güncelle
