@@ -21,7 +21,7 @@
     opacity: 0.4;
   }
 
-  /* GERÇEK PENCERE YANSIMASI - FLU VE GERÇEKÇİ */
+  /* GERÇEK PENCERE YANSIMASI - İYİLEŞTİRİLDİ */
   .window-container {
     width: 95%;
     max-width: 500px;
@@ -53,11 +53,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(1.5px) brightness(1.1) contrast(1.1);
-    transform: scale(1.02);
+    filter: brightness(1.05) contrast(1.05);
+    transform: scale(1.01);
   }
 
-  /* PENCERE CAM EFEKTİ */
+  /* GERÇEKÇİ CAM YANSIMASI */
   .window-glass {
     position: absolute;
     top: 0;
@@ -65,31 +65,33 @@
     right: 0;
     bottom: 0;
     background: 
-      linear-gradient(125deg, 
-        transparent 0%,
-        rgba(255,255,255,0.03) 30%,
-        rgba(255,255,255,0.01) 50%,
-        rgba(255,255,255,0.03) 70%,
+      linear-gradient(135deg, 
+        rgba(255,255,255,0.1) 0%,
+        rgba(255,255,255,0.05) 20%,
+        rgba(255,255,255,0.02) 40%,
+        rgba(255,255,255,0.05) 60%,
+        rgba(255,255,255,0.1) 80%,
         transparent 100%);
     pointer-events: none;
     mix-blend-mode: overlay;
+    opacity: 0.6;
   }
 
   .window-reflection {
     position: absolute;
-    bottom: -50px;
-    left: 10%;
-    width: 80%;
-    height: 40px;
+    bottom: -40px;
+    left: 5%;
+    width: 90%;
+    height: 30px;
     background: linear-gradient(to bottom, 
-      rgba(255,255,255,0.4) 0%,
-      rgba(255,255,255,0.2) 20%,
-      rgba(255,255,255,0.1) 40%,
+      rgba(255,255,255,0.3) 0%,
+      rgba(255,255,255,0.15) 30%,
+      rgba(255,255,255,0.05) 60%,
       transparent 100%);
     border-radius: 50%;
-    filter: blur(12px);
-    transform: scaleY(-0.3);
-    opacity: 0.6;
+    filter: blur(8px);
+    transform: scaleY(-0.4);
+    opacity: 0.4;
   }
 
   /* ŞARKI BAŞLIĞI */
@@ -451,6 +453,24 @@
     transform: scale(0.95);
   }
 
+  /* SAYI TAHMİN OYUNU */
+  .number-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e11d48;
+    border-radius: 10px;
+    font-size: 16px;
+    text-align: center;
+    margin: 15px 0;
+  }
+
+  .guess-result {
+    text-align: center;
+    font-weight: 600;
+    margin: 10px 0;
+    min-height: 24px;
+  }
+
   /* CONFetti */
   #confetti {
     position: fixed;
@@ -547,6 +567,7 @@
       <button class="game-btn" onclick="startFlowerGame()">🌸 Çiçek Toplama</button>
       <button class="game-btn" onclick="startDrawingGame()">🎨 Tatlı Çizimler</button>
       <button class="game-btn" onclick="startMemoryGame()">🧠 B12 Tazeleyici</button>
+      <button class="game-btn" onclick="startNumberGame()">🔢 Sayı Tahmini</button>
     </div>
   </div>
 
@@ -554,12 +575,12 @@
   <div class="window-container">
     <div class="window-frame">
       <video id="reflectionVideo" loop playsinline muted>
-        <source src="yansıma.mp4" type="video/mp4">
+        <!-- Video source JavaScript'te ayarlanacak -->
       </video>
       <div class="window-glass"></div>
     </div>
     <div class="window-reflection"></div>
-    <div class="song-title">Günün şarkısı "Dilerim Ki"</div>
+    <div class="song-title" id="songTitle">Günün şarkısı yükleniyor...</div>
   </div>
 
   <!-- OYUN ALANLARI -->
@@ -596,10 +617,51 @@
     <div class="scoreboard">Hamle: <span id="moves">0</span></div>
     <button class="action-btn" onclick="resetMemoryGame()">Yeniden Başla</button>
   </div>
+
+  <!-- SAYI TAHMİN OYUNU -->
+  <div class="game-area" id="numberGame">
+    <div class="game-title">1-100 arası sayıyı tahmin et! 🔢</div>
+    <div class="scoreboard">Tahmin: <span id="attempts">0</span>/10</div>
+    <input type="number" class="number-input" id="numberGuess" min="1" max="100" placeholder="Sayı gir (1-100)">
+    <div class="guess-result" id="guessResult"></div>
+    <button class="action-btn" onclick="checkGuess()">Tahmin Et</button>
+    <button class="action-btn" onclick="startNumberGame()" style="margin-top: 10px;">Yeni Oyun</button>
+  </div>
 </div>
 
 <script>
-// SES SİSTEMİ - MOBİL UYUMLU
+// GÜNCELLENMİŞ FAL SİSTEMİ
+const fortunes = [
+  "Bugün enerjinle herkesi büyüleyeceksin ✨",
+  "Kalbin sıcacık, gülümsemen ışıl ışıl olacak 🌟",
+  "Harika bir sürpriz seni bekliyor! 🎁",
+  "Bugün her şey istediğin gibi gidecek 💫",
+  "Sen bugün ekstra tatlı görünüyorsun 🍬",
+  "Kocaman bir gülümseme ile tüm günü aydınlat ☀️",
+  "Kalbinin güzelliği etrafına mutluluk saçıyor 💖",
+  "Bugün şans seninle! Küçük bir risk al 🍀",
+  "Yeni bir başlangıç kapında, cesur ol! 🚪",
+  "Sevdiklerinle güzel anılar biriktireceksin 📸",
+  "Maddi açıdan rahatlayacaksın 💰",
+  "Sağlığın her zamankinden iyi olacak 💪",
+  "Yaratıcı fikirler beyninde dans ediyor 💃",
+  "Eski bir arkadaşın seni arayacak 📞",
+  "Aşk hayatında heyecanlı gelişmeler var 💘",
+  "Kariyerinde önemli bir adım atacaksın 🎯",
+  "Yolculuk planları yapmalısın ✈️",
+  "İçgüdülerine güven, seni doğru yola götürecek 🧭",
+  "Bugün kendine zaman ayır, dinlen 🛌",
+  "Minik bir hediye seni mutlu edecek 🎀"
+];
+
+// GÜNCELLENMİŞ ŞARKI SİSTEMİ - SADECE 3 ŞARKI
+const songs = [
+  { file: "lafuguzaf.mp4", title: "Lafügüzaf" },
+  { file: "acyaralar.mp4", title: "Aç Yaralar" },
+  { file: "perde.mp4", title: "Perde" }
+];
+
+// SES SİSTEMİ - DÜZELTİLDİ
 const reflectionVideo = document.getElementById('reflectionVideo');
 let musicOn = false;
 let userInteracted = false;
@@ -609,17 +671,132 @@ rainAudio.loop = true;
 rainAudio.volume = 0.2;
 let rainOn = true;
 
-// KULLANICI ETKİLEŞİMİ BEKLE
+// SAYFA YÜKLENDİĞİNDE
+document.addEventListener('DOMContentLoaded', function() {
+  setDailySong();
+  checkDailyFortune();
+});
+
+// GÜNLÜK ŞARKI SİSTEMİ - DÜZELTİLDİ
+function setDailySong() {
+  const today = new Date().toDateString();
+  const lastSongDate = localStorage.getItem('lastSongDate');
+  let songIndex;
+
+  if (lastSongDate === today) {
+    // Bugünün şarkısı zaten seçilmiş
+    songIndex = parseInt(localStorage.getItem('lastSongIndex'));
+  } else {
+    // Yeni şarkı seç
+    songIndex = Math.floor(Math.random() * songs.length);
+    localStorage.setItem('lastSongDate', today);
+    localStorage.setItem('lastSongIndex', songIndex);
+  }
+
+  const selectedSong = songs[songIndex];
+  reflectionVideo.src = selectedSong.file;
+  document.getElementById('songTitle').textContent = `Günün Şarkısı: ${selectedSong.title}`;
+  
+  // Video yüklendikten sonra muted başlasın
+  reflectionVideo.load();
+  reflectionVideo.muted = true;
+}
+
+// GÜNCELLENMİŞ FAL SİSTEMİ - DÜZELTİLDİ
+function checkDailyFortune() {
+  const today = new Date().toDateString();
+  const lastFortune = localStorage.getItem('lastFortuneDate');
+  
+  if (lastFortune === today) {
+    document.getElementById('fortuneBtn').disabled = true;
+    document.getElementById('fortuneBtn').textContent = '🔮 Bugün Baktın';
+  }
+}
+
+document.getElementById('fortuneBtn').addEventListener('click', () => {
+  const today = new Date().toDateString();
+  const lastFortune = localStorage.getItem('lastFortuneDate');
+  const fortuneMsg = document.getElementById('fortuneMsg');
+  
+  if (lastFortune === today) {
+    fortuneMsg.textContent = "Bugünlük fal hakkını kullandın! 💫 Yarın yeni bir falın olacak!";
+    fortuneMsg.style.display = 'block';
+    setTimeout(() => {
+      fortuneMsg.style.display = 'none';
+    }, 3000);
+    return;
+  }
+  
+  const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+  fortuneMsg.textContent = randomFortune;
+  fortuneMsg.style.display = 'block';
+  localStorage.setItem('lastFortuneDate', today);
+  
+  document.getElementById('fortuneBtn').disabled = true;
+  document.getElementById('fortuneBtn').textContent = '🔮 Bugün Baktın';
+  
+  spawnConfetti(window.innerWidth/2, window.innerHeight/2, 30);
+});
+
+// SAYI TAHMİN OYUNU
+function startNumberGame() {
+  hideAllGames();
+  document.getElementById('numberGame').style.display = 'block';
+  
+  const targetNumber = Math.floor(Math.random() * 100) + 1;
+  let attempts = 0;
+  let gameOver = false;
+  
+  document.getElementById('attempts').textContent = attempts;
+  document.getElementById('guessResult').textContent = '';
+  document.getElementById('numberGuess').value = '';
+  
+  window.checkGuess = function() {
+    if (gameOver) return;
+    
+    const guess = parseInt(document.getElementById('numberGuess').value);
+    const resultElement = document.getElementById('guessResult');
+    
+    if (isNaN(guess) || guess < 1 || guess > 100) {
+      resultElement.textContent = "Lütfen 1-100 arası sayı gir!";
+      resultElement.style.color = "#e11d48";
+      return;
+    }
+    
+    attempts++;
+    document.getElementById('attempts').textContent = attempts;
+    
+    if (guess === targetNumber) {
+      resultElement.textContent = `Tebrikler! ${attempts} denemede buldun! 🎉`;
+      resultElement.style.color = "#10b981";
+      spawnConfetti(window.innerWidth/2, window.innerHeight/2, 50);
+      gameOver = true;
+    } else if (attempts >= 10) {
+      resultElement.textContent = `Üzgünüm! Sayı ${targetNumber} idi 😔`;
+      resultElement.style.color = "#e11d48";
+      gameOver = true;
+    } else if (guess < targetNumber) {
+      resultElement.textContent = "Daha büyük bir sayı tahmin et! ⬆️";
+      resultElement.style.color = "#06b6d4";
+    } else {
+      resultElement.textContent = "Daha küçük bir sayı tahmin et! ⬇️";
+      resultElement.style.color = "#f59e0b";
+    }
+    
+    document.getElementById('numberGuess').value = '';
+    document.getElementById('numberGuess').focus();
+  };
+}
+
+// SES SİSTEMİ - TAMAMEN DÜZELTİLDİ
 function enableAudio() {
   if (!userInteracted) {
     userInteracted = true;
-    // Ses kontrollerini aktif et
     document.getElementById('musicVolume').dispatchEvent(new Event('input'));
     document.getElementById('rainVolume').dispatchEvent(new Event('input'));
   }
 }
 
-// SAYFAYA TIKLAYINCA SESİ AKTİF ET
 document.addEventListener('click', enableAudio);
 document.addEventListener('touchstart', enableAudio);
 
@@ -633,7 +810,6 @@ function closeVolumeControls() {
   document.getElementById('volumeControls').style.display = 'none';
 }
 
-// DIŞARI TIKLAYINCA KAPATMA
 document.addEventListener('click', function(event) {
   const volumeControls = document.getElementById('volumeControls');
   const volumeToggle = document.getElementById('volumeToggle');
@@ -645,7 +821,7 @@ document.addEventListener('click', function(event) {
   }
 });
 
-// SES KONTROLLERİ
+// SES KONTROLLERİ - DÜZELTİLDİ
 document.getElementById('musicVolume').addEventListener('input', function() {
   if (userInteracted) {
     reflectionVideo.volume = this.value / 100;
@@ -658,10 +834,11 @@ document.getElementById('rainVolume').addEventListener('input', function() {
   }
 });
 
-// MÜZİK BUTONU
+// MÜZİK BUTONU - TAMAMEN DÜZELTİLDİ
 document.getElementById('musicToggle').addEventListener('click', function() {
   if (!userInteracted) {
     enableAudio();
+    return;
   }
   
   if (!musicOn) {
@@ -671,6 +848,13 @@ document.getElementById('musicToggle').addEventListener('click', function() {
       document.getElementById('musicToggle').innerText = 'Müziği Kapat';
     }).catch(e => {
       console.log('Video play hatası:', e);
+      // Hata durumunda tekrar dene
+      setTimeout(() => {
+        reflectionVideo.play().then(() => {
+          musicOn = true;
+          document.getElementById('musicToggle').innerText = 'Müziği Kapat';
+        });
+      }, 100);
     });
   } else {
     reflectionVideo.pause();
@@ -681,9 +865,7 @@ document.getElementById('musicToggle').addEventListener('click', function() {
 
 // YAĞMUR BUTONU
 document.getElementById('rainToggle').addEventListener('click', function() {
-  if (!userInteracted) {
-    enableAudio();
-  }
+  if (!userInteracted) enableAudio();
   
   const video = document.getElementById('backgroundVideo');
   rainOn = !rainOn;
@@ -701,11 +883,7 @@ document.getElementById('rainToggle').addEventListener('click', function() {
   }
 });
 
-// GERİ SAYIM VE DİĞER KODLAR AYNI KALDI...
-// (Önceki kodun geri kalanı aynı şekilde devam edecek)
-// ... (önceki JavaScript kodunun devamı)
-
-// GERI SAYIM
+// GERİ SAYIM
 let remaining = 10;
 const clockInterval = setInterval(() => {
   document.getElementById('cd-secs').textContent = String(remaining).padStart(2, '0');
@@ -759,36 +937,7 @@ function confettiLoop() {
 }
 confettiLoop();
 
-// FAL SISTEMI
-const fortunes = [
-  "Bugün enerjinle herkesi büyüleyeceksin ✨",
-  "Kalbin sıcacık, gülümsemen ışıl ışıl olacak 🌟",
-  "Harika bir sürpriz seni bekliyor! 🎁",
-  "Bugün her şey istediğin gibi gidecek 💫",
-  "Sen bugün ekstra tatlı görünüyorsun 🍬",
-  "Kocaman bir gülümseme ile tüm günü aydınlat ☀️",
-  "Kalbinin güzelliği etrafına mutluluk saçıyor 💖"
-];
-
-document.getElementById('fortuneBtn').addEventListener('click', () => {
-  const today = new Date().toDateString();
-  const lastFortune = localStorage.getItem('lastFortuneDate');
-  const fortuneMsg = document.getElementById('fortuneMsg');
-  
-  if (lastFortune === today) {
-    fortuneMsg.textContent = "Bugünlük fal hakkını kullandın! 💫 Yarın yeni bir falın olacak!";
-    fortuneMsg.style.display = 'block';
-    return;
-  }
-  
-  const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-  fortuneMsg.textContent = randomFortune;
-  fortuneMsg.style.display = 'block';
-  localStorage.setItem('lastFortuneDate', today);
-  spawnConfetti(window.innerWidth/2, window.innerHeight/2, 30);
-});
-
-// OYUN SISTEMI
+// DİĞER OYUN KODLARI AYNI
 function hideAllGames() {
   document.querySelectorAll('.game-area').forEach(area => {
     area.style.display = 'none';
@@ -823,11 +972,9 @@ function startFlowerGame() {
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   
-  // Canvas boyutunu ayarla
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
   
-  // Oyunu sıfırla
   flowers = [];
   score = 0;
   missedFlowers = 0;
@@ -835,7 +982,6 @@ function startFlowerGame() {
   document.getElementById('missed').textContent = missedFlowers;
   flowerGameRunning = true;
 
-  // Cicek spawn
   function spawnFlower() {
     if (!flowerGameRunning) return;
     
@@ -850,24 +996,20 @@ function startFlowerGame() {
     flowerSpawnTimeout = setTimeout(spawnFlower, 800);
   }
 
-  // Oyun loop
   function gameLoop() {
     if (!flowerGameRunning) return;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Cicekleri ciz ve hareket ettir
     for (let i = flowers.length - 1; i >= 0; i--) {
       const flower = flowers[i];
       flower.y += flower.vy;
       
-      // Cicek ciz
       ctx.fillStyle = `hsl(${flower.hue}, 70%, 60%)`;
       ctx.beginPath();
       ctx.arc(flower.x, flower.y, flower.size, 0, Math.PI * 2);
       ctx.fill();
       
-      // Ekrandan cikti mi kontrol et
       if (flower.y > canvas.height + 50) {
         flowers.splice(i, 1);
         missedFlowers++;
@@ -883,7 +1025,6 @@ function startFlowerGame() {
     flowerAnimationId = requestAnimationFrame(gameLoop);
   }
 
-  // Tıklama/dokunma event'i
   function handleInteraction(e) {
     if (!flowerGameRunning) return;
     
@@ -910,16 +1051,14 @@ function startFlowerGame() {
     }
   }
 
-  // Event listener'lar
   canvas.addEventListener('click', handleInteraction);
   canvas.addEventListener('touchstart', handleInteraction);
   
-  // Oyunu baslat
   gameLoop();
   spawnFlower();
 }
 
-// CIZIM OYUNU - SILGI EKLENDİ
+// CIZIM OYUNU
 let currentColor = '#e11d48';
 let currentTool = 'draw';
 let isDrawing = false;
@@ -933,27 +1072,22 @@ function startDrawingGame() {
   const canvas = document.getElementById('drawCanvas');
   const ctx = canvas.getContext('2d');
   
-  // Canvas boyutunu ayarla
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
   
-  // Canvas'ı temizle
   ctx.fillStyle = '#fff0f6';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  // Çizim ayarları
   ctx.lineWidth = 3;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
   ctx.strokeStyle = currentColor;
   
-  // Çizim fonksiyonları
   function startDrawing(e) {
     isDrawing = true;
     const pos = getMousePos(canvas, e);
     [lastX, lastY] = [pos.x, pos.y];
     
-    // Nokta çiz (tek tıklama için)
     ctx.beginPath();
     ctx.arc(lastX, lastY, ctx.lineWidth/2, 0, Math.PI * 2);
     if (currentTool === 'erase') {
@@ -989,14 +1123,12 @@ function startDrawingGame() {
   
   function stopDrawing() {
     isDrawing = false;
-    // Çizim moduna geri dön
     if (currentTool === 'erase') {
       ctx.strokeStyle = currentColor;
       ctx.lineWidth = 3;
     }
   }
   
-  // Mouse/touch pozisyonu
   function getMousePos(canvas, evt) {
     const rect = canvas.getBoundingClientRect();
     if (evt.touches) {
@@ -1012,7 +1144,6 @@ function startDrawingGame() {
     }
   }
   
-  // Event listener'ları temizle ve yeniden ekle
   canvas.removeEventListener('mousedown', startDrawing);
   canvas.removeEventListener('mousemove', draw);
   canvas.removeEventListener('mouseup', stopDrawing);
@@ -1046,7 +1177,6 @@ function setColor(color) {
   });
   event.target.classList.add('active');
   
-  // Canvas context'ini güncelle
   const canvas = document.getElementById('drawCanvas');
   const ctx = canvas.getContext('2d');
   ctx.strokeStyle = currentColor;
@@ -1060,7 +1190,7 @@ function clearCanvas() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// MEMORY OYUNU - TAMAMEN DÜZELTİLDİ
+// MEMORY OYUNU
 let flippedCards = [];
 let moves = 0;
 let matchedPairs = 0;
@@ -1084,13 +1214,11 @@ function resetMemoryGame() {
   const emojis = ['🌸', '🌹', '💐', '🌺', '🌷', '🌼', '💖', '🌟'];
   let cards = [...emojis, ...emojis];
   
-  // Karıştır
   for (let i = cards.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [cards[i], cards[j]] = [cards[j], cards[i]];
   }
   
-  // Kartları oluştur
   cards.forEach((emoji, index) => {
     const card = document.createElement('div');
     card.className = 'memory-card';
@@ -1106,12 +1234,10 @@ function resetMemoryGame() {
 function flipCard(card) {
   if (!canFlip || card.classList.contains('revealed') || card.classList.contains('matched')) return;
   
-  // Kartı aç
   card.classList.add('revealed');
   card.textContent = card.dataset.emoji;
   flippedCards.push(card);
   
-  // 2 kart açıldı mı kontrol et
   if (flippedCards.length === 2) {
     canFlip = false;
     moves++;
@@ -1120,7 +1246,6 @@ function flipCard(card) {
     const [card1, card2] = flippedCards;
     
     if (card1.dataset.emoji === card2.dataset.emoji) {
-      // Eşleşme bulundu
       card1.classList.add('matched');
       card2.classList.add('matched');
       matchedPairs++;
@@ -1134,7 +1259,6 @@ function flipCard(card) {
       flippedCards = [];
       canFlip = true;
     } else {
-      // Eşleşme yok, kartları kapat
       setTimeout(() => {
         card1.classList.remove('revealed');
         card2.classList.remove('revealed');
@@ -1147,14 +1271,10 @@ function flipCard(card) {
   }
 }
 
-// SAYFA YUKLENDIGINDE
 window.addEventListener('load', () => {
-  console.log('🚀 Site mobil uyumlu yüklendi!');
-  // Video muted başlasın, kullanıcı etkileşiminden sonra açılsın
-  reflectionVideo.volume = 0;
+  console.log('🚀 Site güncellendi!');
 });
 
-// Sayfa boyutu değişince canvas'ları güncelle
 window.addEventListener('resize', function() {
   const canvases = ['gameCanvas', 'drawCanvas'];
   canvases.forEach(canvasId => {
